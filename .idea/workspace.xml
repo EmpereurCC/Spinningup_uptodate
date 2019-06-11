@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4602e947-2d2e-47ca-8f43-4e790f889043" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PycoGYM/venv/bin/activate" beforeDir="false" afterPath="$PROJECT_DIR$/PycoGYM/venv/bin/activate" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PycoGYM/venv/bin/activate.csh" beforeDir="false" afterPath="$PROJECT_DIR$/PycoGYM/venv/bin/activate.csh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PycoGYM/venv/bin/activate.fish" beforeDir="false" afterPath="$PROJECT_DIR$/PycoGYM/venv/bin/activate.fish" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,15 +12,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/spinup/run.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="468">
-              <caret line="155" selection-start-line="155" selection-end-line="155" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/spinup/utils/logx.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -93,11 +80,23 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="189">
-              <caret line="399" column="38" selection-start-line="399" selection-start-column="38" selection-end-line="399" selection-end-column="38" />
+            <state relative-caret-position="234">
+              <caret line="402" column="48" lean-forward="true" selection-start-line="402" selection-start-column="48" selection-end-line="402" selection-end-column="48" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="29">
+              <caret line="163" column="62" selection-start-line="163" selection-start-column="62" selection-end-line="163" selection-end-column="62" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -142,6 +141,7 @@
         <option value="$PROJECT_DIR$/PycoGYM/venv/bin/activate.csh" />
         <option value="$PROJECT_DIR$/PycoGYM/venv/bin/activate" />
         <option value="$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py" />
+        <option value="$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py" />
       </list>
     </option>
   </component>
@@ -155,7 +155,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="639" />
     <option name="y" value="63" />
     <option name="width" value="1052" />
@@ -184,6 +184,27 @@
               <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
               <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
               <item name="gym" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
+              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
+              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
+              <item name="spinup" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
+              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
+              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
+              <item name="spinup" type="462c0819:PsiDirectoryNode" />
+              <item name="algos" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
+              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
+              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
+              <item name="spinup" type="462c0819:PsiDirectoryNode" />
+              <item name="algos" type="462c0819:PsiDirectoryNode" />
+              <item name="ppo_pyco" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
@@ -284,7 +305,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24972677" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24972677" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Version Control" />
       <window_info anchor="bottom" id="Python Console" />
@@ -292,7 +313,7 @@
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32937366" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32937366" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39956802" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -425,8 +446,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="399" column="38" selection-start-line="399" selection-start-column="38" selection-end-line="399" selection-end-column="38" />
+        <state relative-caret-position="234">
+          <caret line="402" column="48" lean-forward="true" selection-start-line="402" selection-start-column="48" selection-end-line="402" selection-end-column="48" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="29">
+          <caret line="163" column="62" selection-start-line="163" selection-start-column="62" selection-end-line="163" selection-end-column="62" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
