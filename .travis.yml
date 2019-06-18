@@ -2,6 +2,11 @@ os: linux
 language: python
 python: "3.6"
 
+env :
+ - FLAGS="ppo_pyco --env warehouse_manager-v0 --num_cpu 1"
+ - FLAGS="ppo_pyco --env warehouse_manager-v0 --num_cpu 4"
+ - FLAGS="ppo_pyco --env fluvial_natation-v1 --num_cpu 2"
+ 
 
 before_script:
  - cd
@@ -24,11 +29,19 @@ script:
    - cd ../PycoGYM/gym_pyco
    - pip install -e .
    - cd ../..
-   - python spinup/run.py ppo_pyco --env warehouse_manager-v0 --num_cpu 1
+   - python spinup/run.py $FLAGS
    
 
 cache:
   directories:
     - '$HOME/anaconda3'
 
+deploy:
+  provider: pages
+  skip_cleanup: true
+  keep_history : true
+  local_dir: tensorboard/  # or remove this line to upload from root of repo
+  github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
+  on:
+    branch: master
 
