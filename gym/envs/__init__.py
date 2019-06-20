@@ -615,3 +615,27 @@ register(
     entry_point='pycolab.examples.fluvial_natation-v1',
     reward_threshold=100
 )
+
+register(
+    id='extraterrestrial_marauders-v0',
+    entry_point='pycolab.examples.extraterrestrial_marauders-v0',
+    reward_threshold=200
+)
+
+register(
+    id='ordeal-v0',
+    entry_point='pycolab.examples.ordeal-v0',
+    reward_threshold=3
+)
+
+register(
+    id='better_scrolly_maze-v0',
+    entry_point='pycolab.examples.better_scrolly_maze-v0',
+    reward_threshold=500
+)
+
+register(
+    id='shockwave-v0',
+    entry_point='pycolab.examples.shockwave-v0',
+    reward_threshold=2
+)

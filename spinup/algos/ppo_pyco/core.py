@@ -78,8 +78,8 @@ def discount_cumsum(x, discount):
 def attention_CNN(x):
     #x = tf.layers.conv2d(inputs=x, filters=12, kernel_size=[2, 2], strides=1, padding='VALID', activation=tf.nn.relu)
     #x = tf.layers.conv2d(inputs=x, filters=24, kernel_size=[2, 2], strides=1, padding='VALID', activation=tf.nn.relu)
-    x = tf.keras.layers.Conv2D(filters=12, kernel_size=[2,2], strides=1, padding='valid', activation=tf.nn.relu)(inputs=x)
-    x = tf.keras.layers.Conv2D(filters=24, kernel_size=[2,2], strides=1, padding='valid', activation=tf.nn.relu)(inputs=x)
+    x = tf.keras.layers.Conv2D(filters=12, kernel_size=[2,2], strides=1, padding='same', activation=tf.nn.relu)(inputs=x)
+    x = tf.keras.layers.Conv2D(filters=24, kernel_size=[2,2], strides=1, padding='same', activation=tf.nn.relu)(inputs=x)
     shape = x.get_shape()
     return x, [s.value for s in shape]
 
@@ -87,10 +87,6 @@ def residual_CNN(x):
     x = tf.keras.layers.Conv2D(filters=26, kernel_size=[3,3], strides=1, padding='same', activation=tf.nn.relu)(inputs=x)
     x = tf.keras.layers.Conv2D(filters=26, kernel_size=[3,3], strides=1, padding='same', activation=tf.nn.relu)(inputs=x)
     return x
-
-def feature_wise_max_baseline(x):
-    return tf.reduce_max(x, axis=[1,2])
-
 
 
 def query_key_value(nnk, shape):
@@ -121,6 +117,9 @@ def residual(x, inp, residual_time):
 
 def feature_wise_max(x):
     return tf.reduce_max(x, axis=2)
+
+def feature_wise_max_baseline(x):
+    return tf.reduce_max(x, axis=[1,2])
 
 
 def self_attention(query, key, value):
@@ -161,7 +160,6 @@ def mlp_gaussian_policy(x, a, hidden_sizes, activation, output_activation, actio
 
 
 def relational_categorical_policy(x,a, hidden=[256], output_size = 2, activation = tf.nn.relu, final_activation=tf.nn.softmax,act_dim=2):
-    """This is the relational architecture from the paper RRL."""
     nnk, shape = attention_CNN(x)
     query, key, value, E = query_key_value(nnk, shape)
     normalized_query = layer_normalization(query)
@@ -178,11 +176,7 @@ def relational_categorical_policy(x,a, hidden=[256], output_size = 2, activation
     logp_pi = tf.reduce_sum(tf.one_hot(pi, depth=act_dim) * logp_all, axis=1)
     return pi, logp, logp_pi, logits, max_E_hat
 
-
-
-
 def baseline_categorical_policy(x,a, hidden=[256],output_size = 2, activation = tf.nn.relu, final_activation=tf.nn.softmax, act_dim=2):
-    """ This is the baseline in the RRL paper. Added 3 residual CNN instead of the relational module."""
     x, shape = attention_CNN(x)
     new_x = residual_CNN(x)
     new_x = residual_CNN(new_x)
@@ -197,6 +191,22 @@ def baseline_categorical_policy(x,a, hidden=[256],output_size = 2, activation = 
 
 
 
+def baseline_gaussian_policy(x, a, act_dim, output_activation, hidden_sizes=(64,64), activation = tf.nn.relu):
+    x, shape = attention_CNN(x)
+    new_x = residual_CNN(x)
+    new_x = residual_CNN(new_x)
+    new_x = residual_CNN(new_x)
+    max_E_hat = feature_wise_max_baseline(new_x)
+    mu = mlp(max_E_hat, list(hidden_sizes)+[act_dim], activation, output_activation)
+    #log_std = tf.get_variable(name='log_std', initializer=-0.5*np.ones(act_dim, dtype=np.float32))
+    log_std = tf.constant(-0.5 * np.ones(act_dim, dtype=np.float32))
+    std = tf.exp(log_std)
+    pi = mu + tf.random_normal(tf.shape(mu)) * std
+    logp = gaussian_likelihood(a, mu, log_std)
+    logp_pi = gaussian_likelihood(pi, mu, log_std)
+    return pi, logp, logp_pi, max_E_hat
+
+
 
 
 
@@ -204,12 +214,16 @@ def baseline_categorical_policy(x,a, hidden=[256],output_size = 2, activation = 
 """
 Actor-Critics
 """
-def mlp_actor_critic(x, a, hidden_sizes=(64,64), activation=tf.tanh, 
+def mlp_actor_critic(x, a, hidden_sizes=(64,64), activation=tf.tanh,
                      output_activation=None, policy=None, action_space=None):
 
     # default policy builder depends on action space
     if policy == 'relational_categorical_policy' :
         policy = relational_categorical_policy
+    elif policy == 'baseline_categorical_policy' :
+        policy = baseline_categorical_policy
+    elif policy == 'baseline_gaussian_policy' :
+        policy = baseline_gaussian_policy
     elif policy is None and isinstance(action_space, Box):
         policy = mlp_gaussian_policy
     elif policy is None and isinstance(action_space, Discrete):
@@ -217,11 +231,16 @@ def mlp_actor_critic(x, a, hidden_sizes=(64,64), activation=tf.tanh,
 
     with tf.variable_scope('pi'):
         #pi, logp, logp_pi, logits = policy(x, a, hidden_sizes, activation, output_activation, action_space)
-        pi, logp, logp_pi, logits, max_E_hat = policy(x, a, output_size=action_space, act_dim=action_space )
+        if policy == baseline_gaussian_policy:
+            pi, logp, logp_pi, max_E_hat = policy(x, a, action_space, output_activation, hidden_sizes=(64,64), activation = tf.nn.relu)
+        else:
+            pi, logp, logp_pi, logits, max_E_hat = policy(x, a, output_size=action_space, act_dim=action_space )
 
 
     with tf.variable_scope('v'):
         #v = tf.squeeze(mlp(x, list(hidden_sizes) + [1], activation, None), axis=1)
         v = tf.squeeze(output_layer(max_E_hat, [256], 1, tf.nn.relu, None), axis = 1)
-
-    return pi, logp, logp_pi, v, logits
+    if policy == baseline_gaussian_policy:
+        return pi, logp, logp_pi, v
+    else:
+        return pi, logp, logp_pi, v, logits
