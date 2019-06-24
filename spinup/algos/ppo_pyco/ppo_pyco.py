@@ -217,7 +217,10 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
 
     obs_dim = env.observation_space.shape
     # act_dim = env.action_space.n
-    act_dim = env.action_space.shape
+    if env.action_space == 4:
+        act_dim = env.action_space
+    else:
+        act_dim = env.action_space.shape
 
     # Share information about action space with policy architecture
     ac_kwargs['action_space'] = env.action_space

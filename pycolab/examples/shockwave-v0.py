@@ -188,6 +188,7 @@ def make_game(level):
       drapes={'@': ShockwaveDrape, ' ': MinimalDrape, '^': MinimalDrape},
       update_schedule=[' ', '^', 'P', '@'],
       z_order=[' ', '^', '@', 'P'],
+      nb_action=4
   )
 
 

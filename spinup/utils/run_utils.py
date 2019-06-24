@@ -180,6 +180,10 @@ def call_experiment(exp_name, thunk, seed=0, num_cpu=1, data_dir=None,
                         game = partial(wrapPyco, mg.make_game(level=0))
                     elif env_name == 'better_scrolly_maze-v0':
                         game = partial(wrapPyco, mg.make_game(level=0))
+                    elif env_name == 'aperture-v0':
+                        game = partial(wrapPyco, mg.make_game(level_idx=0))
+                    elif env_name == 'shockwave-v0':
+                        game = partial(wrapPyco, mg.make_game(level=0))
                     else:
                         game = partial(wrapPyco, mg.make_game())
                     return game

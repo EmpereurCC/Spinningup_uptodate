@@ -219,7 +219,7 @@ def make_game(level_idx):
       sprites={'A': PlayerSprite},
       drapes={'X': ApertureDrape},
       update_schedule=[['A'], ['X']],  # Move player, then check apertures.
-      z_order=['X', 'A'])  # Draw player on top of aperture.
+      z_order=['X', 'A'],nb_action=9)  # Draw player on top of aperture.
 
 
 def main(argv=()):

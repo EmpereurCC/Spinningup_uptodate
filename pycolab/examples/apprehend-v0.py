@@ -57,7 +57,7 @@ def make_game():
   return ascii_art.ascii_art_to_game(
       GAME_ART, what_lies_beneath=' ',
       sprites={'P': PlayerSprite, 'b': BallSprite},
-      update_schedule=['b', 'P'])
+      update_schedule=['b', 'P'],nb_action=2)
 
 
 class PlayerSprite(prefab_sprites.MazeWalker):

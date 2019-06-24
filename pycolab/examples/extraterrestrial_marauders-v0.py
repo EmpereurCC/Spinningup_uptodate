@@ -99,7 +99,7 @@ def make_game():
       drapes=dict(X=MarauderDrape,
                   B=BunkerDrape),
       update_schedule=['P', 'B', 'X'] + list(_ALL_BOLT_CHARS),
-      nb_action=5)
+      nb_action=4)
 
 
 class BunkerDrape(plab_things.Drape):

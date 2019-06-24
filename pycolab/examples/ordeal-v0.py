@@ -97,7 +97,7 @@ def make_game():
 
   def make_kansas():
     return ascii_art.ascii_art_to_game(
-        GAME_ART_KANSAS, what_lies_beneath='~', sprites=dict(P=PlayerSprite))
+        GAME_ART_KANSAS, what_lies_beneath='~', sprites=dict(P=PlayerSprite),nb_action=4)
 
   # A cropper for cropping the "Kansas" part of the game to the size of the
   # other two games.
