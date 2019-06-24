@@ -178,6 +178,8 @@ def call_experiment(exp_name, thunk, seed=0, num_cpu=1, data_dir=None,
                     mg = importlib.import_module('pycolab.examples.' + game_name)
                     if env_name == 'warehouse_manager-v0':
                         game = partial(wrapPyco, mg.make_game(level=0))
+                    elif env_name == 'better_scrolly_maze-v0':
+                        game = partial(wrapPyco, mg.make_game(level=0))
                     else:
                         game = partial(wrapPyco, mg.make_game())
                     return game

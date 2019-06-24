@@ -218,7 +218,7 @@ def make_game(level):
       drapes={
           '@': CashDrape},
       update_schedule=['a', 'b', 'c', 'P', '@'],
-      z_order='abc@P')
+      z_order='abc@P',nb_action=4)
 
 
 def make_croppers(level):

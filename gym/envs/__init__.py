@@ -639,3 +639,15 @@ register(
     entry_point='pycolab.examples.shockwave-v0',
     reward_threshold=2
 )
+
+register(
+    id='aperture-v0',
+    entry_point='pycolab.examples.aperture-v0',
+    reward_threshold=5
+)
+
+register(
+    id='apprehend-v0',
+    entry_point='pycolab.examples.apprehend-v0',
+    reward_threshold=4
+)
