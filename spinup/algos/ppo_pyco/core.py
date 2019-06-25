@@ -207,7 +207,23 @@ def baseline_gaussian_policy(x, a, act_dim, output_activation, hidden_sizes=(64,
     return pi, logp, logp_pi, max_E_hat
 
 
-
+def relational_gaussian_policy(x, a, act_dim, output_activation, hidden_sizes=(64,64), activation = tf.nn.relu):
+    nnk, shape = attention_CNN(x)
+    query, key, value, E = query_key_value(nnk, shape)
+    normalized_query = layer_normalization(query)
+    normalized_key = layer_normalization(key)
+    normalized_value = layer_normalization(value)
+    A, attention_weight, shape = self_attention(normalized_query, normalized_key, normalized_value)
+    E_hat = residual(A, E, 2)
+    max_E_hat = feature_wise_max(E_hat)
+    mu = mlp(max_E_hat, list(hidden_sizes)+[act_dim], activation, output_activation)
+    #log_std = tf.get_variable(name='log_std', initializer=-0.5*np.ones(act_dim, dtype=np.float32))
+    log_std = tf.constant(-0.5 * np.ones(act_dim, dtype=np.float32))
+    std = tf.exp(log_std)
+    pi = mu + tf.random_normal(tf.shape(mu)) * std
+    logp = gaussian_likelihood(a, mu, log_std)
+    logp_pi = gaussian_likelihood(pi, mu, log_std)
+    return pi, logp, logp_pi, max_E_hat
 
 
 
@@ -224,6 +240,8 @@ def mlp_actor_critic(x, a, hidden_sizes=(64,64), activation=tf.tanh,
         policy = baseline_categorical_policy
     elif policy == 'baseline_gaussian_policy' :
         policy = baseline_gaussian_policy
+    elif policy == 'relational_gaussian_policy' :
+        policy = relational_gaussian_policy
     elif policy is None and isinstance(action_space, Box):
         policy = mlp_gaussian_policy
     elif policy is None and isinstance(action_space, Discrete):
@@ -233,6 +251,8 @@ def mlp_actor_critic(x, a, hidden_sizes=(64,64), activation=tf.tanh,
         #pi, logp, logp_pi, logits = policy(x, a, hidden_sizes, activation, output_activation, action_space)
         if policy == baseline_gaussian_policy:
             pi, logp, logp_pi, max_E_hat = policy(x, a, action_space, output_activation, hidden_sizes=(64,64), activation = tf.nn.relu)
+        elif policy == relational_gaussian_policy:
+            pi, logp, logp_pi, max_E_hat = policy(x, a, action_space, output_activation, hidden_sizes=(64,64), activation = tf.nn.relu)
         else:
             pi, logp, logp_pi, logits, max_E_hat = policy(x, a, output_size=action_space, act_dim=action_space )
 
@@ -241,6 +261,8 @@ def mlp_actor_critic(x, a, hidden_sizes=(64,64), activation=tf.tanh,
         #v = tf.squeeze(mlp(x, list(hidden_sizes) + [1], activation, None), axis=1)
         v = tf.squeeze(output_layer(max_E_hat, [256], 1, tf.nn.relu, None), axis = 1)
     if policy == baseline_gaussian_policy:
+        return pi, logp, logp_pi, v
+    elif policy == relational_gaussian_policy:
         return pi, logp, logp_pi, v
     else:
         return pi, logp, logp_pi, v, logits
