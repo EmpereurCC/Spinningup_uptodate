@@ -9,7 +9,6 @@ from spinup.utils.mpi_tf import MpiAdamOptimizer, sync_all_params
 from spinup.utils.mpi_tools import mpi_fork, mpi_avg, proc_id, mpi_statistics_scalar, num_procs
 from tensorflow.python import debug as tf_debug
 
-FLAGS = '/home/clement/spinningup/tensorboard'
 
 
 class PPOBuffer:
@@ -125,7 +124,7 @@ with early stopping based on approximate KL
 def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=dict(), seed=0,
              steps_per_epoch=4000, epochs=1000, gamma=0.99, clip_ratio=0.2, pi_lr=3e-4,
              vf_lr=1e-3, train_pi_iters=80, train_v_iters=80, lam=0.97, max_ep_len=1000,
-             target_kl=0.01, logger_kwargs=dict(), save_freq=10):
+             target_kl=0.01, logger_kwargs=dict(), save_freq=10, tensorboard_path = '/home/clement/spinningup/tensorboard'):
     """
 
     Args:
@@ -195,6 +194,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
 
         save_freq (int): How often (in terms of gap between epochs) to save
             the current policy and value function.
+        tensorboard_path: The path to the saved graphs&scalars in tensorboard
 
     """
 
@@ -297,9 +297,9 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
 
     # tensorboard
     merged = tf.summary.merge_all()
-    train_writer = tf.summary.FileWriter(FLAGS + '/train',
+    train_writer = tf.summary.FileWriter(tensorboard_path + '/train',
                                          sess.graph)
-    test_writer = tf.summary.FileWriter(FLAGS + '/test')
+    test_writer = tf.summary.FileWriter(tensorboard_path + '/test')
 
     sess.run(tf.global_variables_initializer())
     # saver.restore(sess, "/home/clement/Documents/spinningup/trained_params/model.ckpt")
@@ -475,8 +475,8 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
 
         update(epoch)
 
-        saver = tf.train.Saver()
-        save_path = saver.save(sess, "/home/clement/Documents/spinningup/trained_params/model.ckpt")
+        #saver = tf.train.Saver()
+        #save_path = saver.save(sess, "/home/clement/Documents/spinningup/trained_params/model.ckpt")
 
         # If you want to reload saved variables :
         # with tf.Session() as sess:
