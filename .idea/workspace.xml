@@ -2,7 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4602e947-2d2e-47ca-8f43-4e790f889043" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/progress.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/progress.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/saved_model.pb" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/saved_model.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.data-00000-of-00001" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.data-00000-of-00001" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.index" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.index" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/vars.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/vars.pkl" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -11,71 +17,54 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/spinup/utils/logx.py">
+        <entry file="file://$PROJECT_DIR$/gym/utils/play.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="303">
-              <caret line="328" selection-start-line="328" selection-end-line="328" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/test_ppo.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="-1380">
+              <caret line="31" column="15" selection-start-line="31" selection-start-column="15" selection-end-line="31" selection-end-column="15" />
               <folding>
-                <element signature="e#23#38#0" expanded="true" />
+                <element signature="e#0#10#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/gym/setup.py">
+        <entry file="file://$PROJECT_DIR$/spinup/run.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="23" column="15" selection-start-line="23" selection-start-column="15" selection-end-line="23" selection-end-column="15" />
+            <state relative-caret-position="1169">
+              <caret line="230" selection-start-line="230" selection-end-line="230" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/PycharmProjects/PycoGYM/gym_pyco/gym_pyco/envs/pyco_env.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="285">
+              <caret line="28" column="8" selection-start-line="28" selection-start-column="8" selection-end-line="28" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-75">
+              <caret line="178" column="76" selection-start-line="178" selection-start-column="76" selection-end-line="178" selection-end-column="76" />
               <folding>
-                <element signature="e#1#44#0" expanded="true" />
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/gym/version.py">
+        <entry file="file://$PROJECT_DIR$/gym/envs/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="18" lean-forward="true" selection-start-column="18" selection-end-column="18" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/PycoGYM/venv/bin/activate.fish">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="31" column="74" selection-start-line="31" selection-start-column="74" selection-end-line="31" selection-end-column="74" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/PycoGYM/venv/bin/activate.csh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" column="36" lean-forward="true" selection-start-line="14" selection-start-column="36" selection-end-line="14" selection-end-column="36" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/PycoGYM/venv/bin/activate">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="213">
-              <caret line="40" column="78" selection-start-line="40" selection-start-column="78" selection-end-line="40" selection-end-column="78" />
+            <state relative-caret-position="74">
+              <caret line="491" column="13" selection-start-line="491" selection-start-column="13" selection-end-line="499" selection-end-column="73" />
             </state>
           </provider>
         </entry>
@@ -83,17 +72,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="402" column="48" lean-forward="true" selection-start-line="402" selection-start-column="48" selection-end-line="402" selection-end-column="48" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="29">
-              <caret line="163" column="62" selection-start-line="163" selection-start-column="62" selection-end-line="163" selection-end-column="62" />
+            <state relative-caret-position="2955">
+              <caret line="197" selection-start-line="197" selection-end-line="197" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -102,13 +82,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/spinup/algos/ppo/ppo.py">
+        <entry file="file://$PROJECT_DIR$/spinup/utils/run_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="348">
-              <caret line="270" selection-start-line="270" selection-end-line="270" />
+            <state relative-caret-position="104">
+              <caret line="158" selection-start-line="158" selection-end-line="158" />
               <folding>
-                <element signature="e#0#18#0" expanded="true" />
+                <element signature="e#0#136#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.travis.yml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="345">
+              <caret line="23" column="30" selection-start-line="23" selection-start-column="30" selection-end-line="23" selection-end-column="30" />
             </state>
           </provider>
         </entry>
@@ -124,8 +113,22 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+      <find>nbformat</find>
+      <find>nb_action</find>
+      <find>action</find>
+      <find>Story</find>
       <find>$USER_HOME$</find>
+      <find>max_ep_len</find>
+      <find>flags</find>
+      <find>$PROJECT_DIR$/data/cmd_ppo_pyco</find>
+      <find>FLAG</find>
+      <find>Pong</find>
+      <find>pong</find>
     </findStrings>
+    <dirStrings>
+      <dir>$PROJECT_DIR$/gym/gym.egg-info</dir>
+      <dir>$PROJECT_DIR$</dir>
+    </dirStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -135,29 +138,32 @@
       <list>
         <option value="$PROJECT_DIR$/spinup/algos/ppo/ppo.py" />
         <option value="$PROJECT_DIR$/spinup/utils/mpi_tf.py" />
-        <option value="$PROJECT_DIR$/gym/setup.py" />
         <option value="$PROJECT_DIR$/gym/version.py" />
         <option value="$PROJECT_DIR$/PycoGYM/venv/bin/activate.fish" />
         <option value="$PROJECT_DIR$/PycoGYM/venv/bin/activate.csh" />
         <option value="$PROJECT_DIR$/PycoGYM/venv/bin/activate" />
-        <option value="$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py" />
+        <option value="$PROJECT_DIR$/spinup/algos/IMPALA/impala.py" />
+        <option value="$PROJECT_DIR$/gym/wrappers/time_limit.py" />
+        <option value="$PROJECT_DIR$/gym/envs/box2d/car_racing.py" />
+        <option value="$PROJECT_DIR$/gym/setup.py" />
+        <option value="$PROJECT_DIR$/gym/envs/__init__.py" />
+        <option value="$PROJECT_DIR$/pycolab/examples/better_scrolly_maze-v0.py" />
+        <option value="$PROJECT_DIR$/pycolab/examples/extraterrestrial_marauders-v0.py" />
+        <option value="$PROJECT_DIR$/pycolab/examples/aperture-v0.py" />
+        <option value="$PROJECT_DIR$/pycolab/examples/apprehend-v0.py" />
+        <option value="$PROJECT_DIR$/pycolab/examples/ordeal-v0.py" />
+        <option value="$PROJECT_DIR$/pycolab/examples/shockwave-v0.py" />
+        <option value="$USER_HOME$/PycharmProjects/PycoGYM/gym_pyco/gym_pyco/envs/pyco_env.py" />
         <option value="$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py" />
-      </list>
-    </option>
-  </component>
-  <component name="ProjectConfigurationFiles">
-    <option name="files">
-      <list>
-        <option value="$PROJECT_DIR$/.idea/spinningup_instadeep.iml" />
-        <option value="$PROJECT_DIR$/.idea/misc.xml" />
-        <option value="$PROJECT_DIR$/.idea/modules.xml" />
-        <option value="$PROJECT_DIR$/.idea/vcs.xml" />
+        <option value="$PROJECT_DIR$/spinup/utils/run_utils.py" />
+        <option value="$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py" />
+        <option value="$PROJECT_DIR$/.travis.yml" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="639" />
-    <option name="y" value="63" />
+    <option name="x" value="759" />
+    <option name="y" value="54" />
     <option name="width" value="1052" />
     <option name="height" value="905" />
   </component>
@@ -181,39 +187,6 @@
             </path>
             <path>
               <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
-              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
-              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
-              <item name="gym" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
-              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
-              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
-              <item name="spinup" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
-              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
-              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
-              <item name="spinup" type="462c0819:PsiDirectoryNode" />
-              <item name="algos" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
-              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
-              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
-              <item name="spinup" type="462c0819:PsiDirectoryNode" />
-              <item name="algos" type="462c0819:PsiDirectoryNode" />
-              <item name="ppo_pyco" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
-              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
-              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
@@ -224,8 +197,8 @@
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/PycoGYM/gym_pyco" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
+    <property name="last_opened_file_path" value="$USER_HOME$/IMPALA/scalable_agent" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -253,7 +226,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/spinup/run.py" />
-      <option name="PARAMETERS" value="ppo_pyco --env warehouse_manager-v0 --num_cpu 1" />
+      <option name="PARAMETERS" value="ppo_pyco --env MontezumaRevenge-v0 --max_ep_len 1000 --num_cpu 1" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -283,8 +256,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.test_ppo" />
       <item itemvalue="Python.run" />
+      <item itemvalue="Python.test_ppo" />
     </list>
   </component>
   <component name="SvnConfiguration">
@@ -300,24 +273,33 @@
     </task>
     <servers />
   </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Favorites" side_tool="true" />
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24972677" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Python Console" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32937366" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39956802" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32937366" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32937366" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.32937366" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info anchor="bottom" id="Python Console" order="10" weight="0.32937366" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -331,23 +313,83 @@
           <line>319</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/anaconda2/envs/test_env/lib/python3.6/site-packages/pyglet-1.4.0b1-py3.6.egg/pyglet/image/__init__.py</url>
+          <line>2004</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py</url>
+          <line>426</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$USER_HOME$/PycharmProjects/PycoGYM/gym_pyco/gym_pyco/envs/pyco_env.py</url>
+          <line>25</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py</url>
+          <line>241</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/spinup/utils/run_utils.py</url>
+          <line>215</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py</url>
+          <line>270</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
       <expression>
-        <expression-string>self.epoch_dict[key]</expression-string>
+        <expression-string>env.action_space.n</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>self.epoch_dict</expression-string>
+        <expression-string>env.action_space</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>key</expression-string>
+        <expression-string>env.action_space.shape[0]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>env.action_space.shape</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>gym_or_pyco</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>type(env.action_space) == 'int'</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>env</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>act_dim</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>game.current_game._cols</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -370,13 +412,6 @@
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/spinup/run.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
-          <caret line="155" selection-start-line="155" selection-end-line="155" />
         </state>
       </provider>
     </entry>
@@ -406,12 +441,35 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gym/setup.py">
+    <entry file="file://$PROJECT_DIR$/PycoGYM/venv/bin/activate.fish">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" column="15" selection-start-line="23" selection-start-column="15" selection-end-line="23" selection-end-column="15" />
+        <state relative-caret-position="465">
+          <caret line="31" column="74" selection-start-line="31" selection-start-column="74" selection-end-line="31" selection-end-column="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PycoGYM/venv/bin/activate.csh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="36" selection-start-line="14" selection-start-column="36" selection-end-line="14" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PycoGYM/venv/bin/activate">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="600">
+          <caret line="40" column="78" selection-start-line="40" selection-start-column="78" selection-end-line="40" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spinup/algos/IMPALA/impala.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gym/envs/registration.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2335">
           <folding>
-            <element signature="e#1#44#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -419,45 +477,221 @@
     <entry file="file://$PROJECT_DIR$/gym/version.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
-          <caret column="18" lean-forward="true" selection-start-column="18" selection-end-column="18" />
+          <caret column="18" selection-start-column="18" selection-end-column="18" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PycoGYM/venv/bin/activate.csh">
+    <entry file="file://$PROJECT_DIR$/gym/wrappers/time_limit.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="36" lean-forward="true" selection-start-line="14" selection-start-column="36" selection-end-line="14" selection-end-column="36" />
+        <state relative-caret-position="464">
+          <caret line="43" selection-start-line="43" selection-end-line="43" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PycoGYM/venv/bin/activate.fish">
+    <entry file="file://$USER_HOME$/anaconda2/envs/test_env/lib/python3.6/site-packages/pyglet-1.4.0b1-py3.6.egg/pyglet/image/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="31" column="74" selection-start-line="31" selection-start-column="74" selection-end-line="31" selection-end-column="74" />
+        <state relative-caret-position="30405">
+          <caret line="2029" lean-forward="true" selection-start-line="2029" selection-end-line="2029" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PycoGYM/venv/bin/activate">
+    <entry file="file://$PROJECT_DIR$/gym/setup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="213">
-          <caret line="40" column="78" selection-start-line="40" selection-start-column="78" selection-end-line="40" selection-end-column="78" />
+        <state relative-caret-position="94">
+          <caret line="14" column="51" selection-start-line="14" selection-start-column="51" selection-end-line="14" selection-end-column="51" />
+          <folding>
+            <element signature="e#1#44#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py">
+    <entry file="file://$PROJECT_DIR$/spinup/algos/ppo_pyco/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spinup/algos/IMPALA/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gym/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="402" column="48" lean-forward="true" selection-start-line="402" selection-start-column="48" selection-end-line="402" selection-end-column="48" />
+        <state>
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gym/envs/box2d/car_racing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="495">
+          <caret line="33" column="1" selection-start-line="33" selection-start-column="1" selection-end-line="33" selection-end-column="1" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pycolab/examples/warehouse_manager-v0.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="177" column="46" selection-start-line="177" selection-start-column="38" selection-end-line="177" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pycolab/examples/aperture-v0.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="969">
+          <caret line="221" column="36" selection-start-line="221" selection-start-column="36" selection-end-line="221" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pycolab/examples/apprehend-v0.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="59" column="44" selection-start-line="59" selection-start-column="44" selection-end-line="59" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pycolab/examples/better_scrolly_maze-v0.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="220" column="33" selection-start-line="220" selection-start-column="33" selection-end-line="220" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pycolab/examples/fluvial_natation-v1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-630" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pycolab/examples/extraterrestrial_marauders-v0.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="179">
+          <caret line="101" column="15" selection-start-line="101" selection-start-column="9" selection-end-line="101" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pycolab/examples/ordeal-v0.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="179">
+          <caret line="106" column="14" selection-start-line="106" selection-start-column="9" selection-end-line="106" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pycolab/examples/shockwave-v0.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="433">
+          <caret line="190" column="17" selection-start-line="190" selection-start-column="17" selection-end-line="190" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spinup/user_config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spinup/version.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2019.1/system/python_stubs/2010669736/builtins.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="2883" column="8" selection-start-line="2883" selection-start-column="8" selection-end-line="2883" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="29" selection-start-line="17" selection-start-column="29" selection-end-line="17" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="29">
-          <caret line="163" column="62" selection-start-line="163" selection-start-column="62" selection-end-line="163" selection-end-column="62" />
+        <state relative-caret-position="-75">
+          <caret line="178" column="76" selection-start-line="178" selection-start-column="76" selection-end-line="178" selection-end-column="76" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/PycharmProjects/PycoGYM/gym_pyco/gym_pyco/envs/pyco_env.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="28" column="8" selection-start-line="28" selection-start-column="8" selection-end-line="28" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spinup/run.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1169">
+          <caret line="230" selection-start-line="230" selection-end-line="230" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="44" lean-forward="true" selection-start-line="11" selection-start-column="44" selection-end-line="11" selection-end-column="44" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda2/envs/test_env/lib/python3.6/importlib/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1195">
+          <caret line="125" selection-start-line="125" selection-end-line="125" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gym/utils/play.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1380">
+          <caret line="31" column="15" selection-start-line="31" selection-start-column="15" selection-end-line="31" selection-end-column="15" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gym/envs/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="74">
+          <caret line="491" column="13" selection-start-line="491" selection-start-column="13" selection-end-line="499" selection-end-column="73" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spinup/utils/run_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="104">
+          <caret line="158" selection-start-line="158" selection-end-line="158" />
+          <folding>
+            <element signature="e#0#136#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2955">
+          <caret line="197" selection-start-line="197" selection-end-line="197" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.travis.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="23" column="30" selection-start-line="23" selection-start-column="30" selection-end-line="23" selection-end-column="30" />
         </state>
       </provider>
     </entry>

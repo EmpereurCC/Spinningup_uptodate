@@ -10,17 +10,17 @@ env :
 
 before_script:
  - cd
- - if [ ! -d ~/anaconda3/bin ] ; then rm -rf ~/anaconda3/ ; fi ;
- - if [ ! -d ~/anaconda3/bin ] ; then wget https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh -O ~/anaconda.sh ; fi ;
- - if [ ! -d ~/anaconda3/bin ] ; then bash ~/anaconda.sh -b -p $HOME/anaconda3 ; fi ;
- - eval "$($HOME/anaconda3/bin/conda shell.bash hook)"
+ - if [ ! -d ~/miniconda3/bin ] ; then rm -rf ~/miniconda3/ ; fi ;
+ - if [ ! -d ~/miniconda3/bin ] ; then wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh ; fi ;
+ - if [ ! -d ~/miniconda3/bin ] ; then bash ~/miniconda.sh -b -p $HOME/miniconda3 ; fi ;
+ - eval "$($HOME/miniconda3/bin/conda shell.bash hook)"
  - conda init
  - conda update -y conda
- - conda create -y -n cc python=3.6 anaconda || true
+ - conda create -y -n cc python=3.6
  - conda activate cc
  - conda update --all
 # - conda install -y tensorflow setuptools seaborn mpi4py cloudpickle joblib tqdm
- - conda install -y mpi4py
+ - pip install -y mpi4py
  - conda install -y tensorflow
  - cd -
     
