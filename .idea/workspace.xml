@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4602e947-2d2e-47ca-8f43-4e790f889043" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.travis.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gym/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym/setup.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -12,6 +12,18 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/gym/setup.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="510">
+              <caret line="34" column="51" selection-start-line="34" selection-start-column="51" selection-end-line="34" selection-end-column="51" />
+              <folding>
+                <element signature="e#1#44#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gym/utils/play.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -87,7 +99,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="270">
@@ -148,7 +160,6 @@
         <option value="$PROJECT_DIR$/spinup/algos/IMPALA/impala.py" />
         <option value="$PROJECT_DIR$/gym/wrappers/time_limit.py" />
         <option value="$PROJECT_DIR$/gym/envs/box2d/car_racing.py" />
-        <option value="$PROJECT_DIR$/gym/setup.py" />
         <option value="$PROJECT_DIR$/gym/envs/__init__.py" />
         <option value="$PROJECT_DIR$/pycolab/examples/better_scrolly_maze-v0.py" />
         <option value="$PROJECT_DIR$/pycolab/examples/extraterrestrial_marauders-v0.py" />
@@ -161,6 +172,7 @@
         <option value="$PROJECT_DIR$/spinup/utils/run_utils.py" />
         <option value="$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py" />
         <option value="$PROJECT_DIR$/.travis.yml" />
+        <option value="$PROJECT_DIR$/gym/setup.py" />
       </list>
     </option>
   </component>
@@ -187,6 +199,12 @@
               <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
               <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
               <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
+              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
+              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
+              <item name="gym" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
@@ -511,16 +529,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gym/setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="94">
-          <caret line="14" column="51" selection-start-line="14" selection-start-column="51" selection-end-line="14" selection-end-column="51" />
-          <folding>
-            <element signature="e#1#44#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/spinup/algos/ppo_pyco/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -708,6 +716,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="30" column="3" lean-forward="true" selection-start-line="30" selection-start-column="3" selection-end-line="30" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gym/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="34" column="51" selection-start-line="34" selection-start-column="51" selection-end-line="34" selection-end-column="51" />
+          <folding>
+            <element signature="e#1#44#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
