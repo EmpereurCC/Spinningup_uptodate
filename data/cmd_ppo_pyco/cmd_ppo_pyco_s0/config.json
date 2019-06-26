@@ -2,14 +2,14 @@
     "ac_kwargs":	{},
     "actor_critic":	"mlp_actor_critic",
     "clip_ratio":	0.2,
-    "env_fn":	"<function call_experiment.<locals>.thunk_plus.<locals>.<lambda> at 0x7f3944dc8620>",
+    "env_fn":	"<function call_experiment.<locals>.thunk_plus.<locals>.<lambda> at 0x7fe543b18598>",
     "epochs":	1000,
     "exp_name":	"cmd_ppo_pyco",
     "gamma":	0.99,
     "gym_or_pyco":	"gym",
     "lam":	0.97,
     "logger":	{
-        "<spinup.utils.logx.EpochLogger object at 0x7f3944dd3a58>":	{
+        "<spinup.utils.logx.EpochLogger object at 0x7fe543b23be0>":	{
             "epoch_dict":	{},
             "exp_name":	"cmd_ppo_pyco",
             "first_row":	true,

@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4602e947-2d2e-47ca-8f43-4e790f889043" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/gym/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/gym/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/progress.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/progress.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -12,11 +13,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/gym/setup.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="34" column="51" selection-start-line="34" selection-start-column="51" selection-end-line="34" selection-end-column="51" />
+            <state relative-caret-position="240">
+              <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
               <folding>
                 <element signature="e#1#44#0" expanded="true" />
               </folding>
@@ -99,11 +100,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="30" column="3" lean-forward="true" selection-start-line="30" selection-start-column="3" selection-end-line="30" selection-end-column="3" />
+            <state relative-caret-position="450">
+              <caret line="30" column="3" selection-start-line="30" selection-start-column="3" selection-end-line="30" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -199,25 +200,6 @@
               <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
               <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
               <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
-              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
-              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
-              <item name="gym" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
-              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
-              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
-              <item name="pycolab" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
-              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
-              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
-              <item name="pycolab" type="462c0819:PsiDirectoryNode" />
-              <item name="examples" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
@@ -712,20 +694,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.travis.yml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="30" column="3" lean-forward="true" selection-start-line="30" selection-start-column="3" selection-end-line="30" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/gym/setup.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="34" column="51" selection-start-line="34" selection-start-column="51" selection-end-line="34" selection-end-column="51" />
+        <state relative-caret-position="240">
+          <caret line="16" lean-forward="true" selection-start-line="16" selection-end-line="16" />
           <folding>
             <element signature="e#1#44#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.travis.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="30" column="3" selection-start-line="30" selection-start-column="3" selection-end-line="30" selection-end-column="3" />
         </state>
       </provider>
     </entry>

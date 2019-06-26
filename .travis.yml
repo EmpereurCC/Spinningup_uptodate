@@ -4,8 +4,8 @@ python: "3.6"
 
 env :
  - FLAGS="ppo_pyco --env warehouse_manager-v0 --num_cpu 1 --tensorboard_path 'home/travis/build/EmpereurCC/spinningup_instadeep2'"
- - FLAGS="ppo_pyco --env warehouse_manager-v0 --num_cpu 4"
- - FLAGS="ppo_pyco --env fluvial_natation-v1 --num_cpu 2"
+ - FLAGS="ppo_pyco --env warehouse_manager-v0 --num_cpu 4 --tensorboard_path 'home/travis/build/EmpereurCC/spinningup_instadeep2'"
+ - FLAGS="ppo_pyco --env fluvial_natation-v1 --num_cpu 2 --tensorboard_path 'home/travis/build/EmpereurCC/spinningup_instadeep2'"
  
 
 before_script:
