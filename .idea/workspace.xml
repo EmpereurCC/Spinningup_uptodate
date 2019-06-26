@@ -91,8 +91,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
+            <state relative-caret-position="255">
+              <caret line="23" column="49" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pycolab/examples/warehouse_manager-v0.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="389">
+              <caret line="63" column="36" selection-start-line="63" selection-start-column="36" selection-end-line="63" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -156,7 +165,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="759" />
     <option name="y" value="54" />
     <option name="width" value="1052" />
@@ -179,6 +188,19 @@
               <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
               <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
               <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
+              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
+              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
+              <item name="pycolab" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
+              <item name="spinningup_instadeep" type="47feb1d3:ProjectViewModuleNode" />
+              <item name="spinningup_instadeep" type="462c0819:PsiDirectoryNode" />
+              <item name="pycolab" type="462c0819:PsiDirectoryNode" />
+              <item name="examples" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="spinningup_instadeep" type="b2602c69:ProjectViewProjectNode" />
@@ -525,13 +547,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pycolab/examples/warehouse_manager-v0.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="177" column="46" selection-start-line="177" selection-start-column="38" selection-end-line="177" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/pycolab/examples/aperture-v0.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="969">
@@ -683,10 +698,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pycolab/examples/warehouse_manager-v0.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="389">
+          <caret line="63" column="36" selection-start-line="63" selection-start-column="36" selection-end-line="63" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
+        <state relative-caret-position="255">
+          <caret line="23" column="49" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
         </state>
       </provider>
     </entry>

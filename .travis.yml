@@ -19,10 +19,9 @@ before_script:
  - conda create -y -n cc python=3.6
  - conda activate cc
  - conda update --all
-# - conda install -y tensorflow setuptools seaborn mpi4py cloudpickle joblib tqdm
  - sudo apt-get install libcr-dev mpich mpich-doc
  - pip install mpi4py
- - conda install -y tensorflow
+ - conda install -y tensorflow setuptools seaborn cloudpickle joblib tqdm
  - cd -
     
 script:
