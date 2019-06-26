@@ -4,10 +4,6 @@
     <list default="true" id="4602e947-2d2e-47ca-8f43-4e790f889043" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.travis.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/progress.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/progress.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/saved_model.pb" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/saved_model.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.data-00000-of-00001" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.data-00000-of-00001" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.index" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/vars.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/vars.pkl" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -96,7 +92,7 @@
         <entry file="file://$PROJECT_DIR$/.travis.yml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
-              <caret line="22" column="3" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
+              <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -690,7 +686,7 @@
     <entry file="file://$PROJECT_DIR$/.travis.yml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
-          <caret line="22" column="3" selection-start-line="22" selection-start-column="3" selection-end-line="22" selection-end-column="3" />
+          <caret line="22" column="8" selection-start-line="22" selection-start-column="8" selection-end-line="22" selection-end-column="8" />
         </state>
       </provider>
     </entry>
