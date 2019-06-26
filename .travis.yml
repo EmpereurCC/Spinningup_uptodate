@@ -29,7 +29,7 @@ script:
    - pip install -e .
    - cd gym
    - pip install -e .
-   - pip install 'gym[all]'
+   #- pip install 'gym[all]'
    - cd ../PycoGYM/gym_pyco
    - pip install -e .
    - cd ../..
