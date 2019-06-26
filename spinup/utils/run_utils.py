@@ -156,7 +156,7 @@ def call_experiment(exp_name, thunk, seed=0, num_cpu=1, data_dir=None,
 
     def thunk_plus():
         # Make 'env_fn' from 'env_name'
-        dict_gym = ['CarRacing-v0', 'LunarLander-v2']
+        dict_gym = ['CarRacing-v0', 'LunarLander-v2','Pong-v0','Pong-v4']
         """HOT FIX : Make pycoenv training and saving of parameters possible here."""
         if kwargs['env_name'] in dict_gym:
             import gym

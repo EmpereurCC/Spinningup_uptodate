@@ -204,11 +204,11 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     seed += 10000 * proc_id()
     tf.set_random_seed(seed)
     np.random.seed(seed)
-    dict_continous_gym = ['CarRacing', 'LunarLander']
+    dict_continous_gym = ['CarRacing', 'LunarLander','Pong']
     dict_discrete_gym = []
 
     env = env_fn()
-    dict_gym = ['CarRacing', 'LunarLander']
+    dict_gym = ['CarRacing', 'LunarLander','Pong']
     # This code is specific for pycolab
     if gym_or_pyco == 'gym':
         None
@@ -220,7 +220,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     if env.action_space == 4:
         act_dim = env.action_space
     else:
-        act_dim = env.action_space.shape
+        act_dim = env.action_space.n
 
     # Share information about action space with policy architecture
     ac_kwargs['action_space'] = env.action_space
@@ -249,7 +249,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     # pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='relational_categorical_policy', action_space = env.action_space.n,  **ac_kwargs)
     if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
         pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='baseline_categorical_policy',
-                                                    action_space=env.action_space.shape[0])
+                                                    action_space=env.action_space.n)
     elif gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
         pi, logp, logp_pi, v = actor_critic(x_ph, a_ph, policy='relational_gaussian_policy',
                                             action_space=env.action_space.shape[0])
