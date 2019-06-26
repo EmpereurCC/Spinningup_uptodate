@@ -196,6 +196,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             the current policy and value function.
         tensorboard_path: The path to the saved graphs&scalars in tensorboard
 
+
     """
 
     logger = EpochLogger(**logger_kwargs)
@@ -204,11 +205,29 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     seed += 10000 * proc_id()
     tf.set_random_seed(seed)
     np.random.seed(seed)
-    dict_continous_gym = ['CarRacing', 'LunarLander','Pong']
+    dict_continous_gym = ['CarRacing', 'LunarLander','Pong','AirRaid','Adventure', 'AirRaid', 'Alien', 'Amidar',
+                          'Assault', 'Asterix', 'Asteroids', 'Atlantis',
+        'BankHeist', 'BattleZone', 'BeamRider', 'Berzerk', 'Bowling', 'Boxing', 'Breakout', 'Carnival',
+        'Centipede', 'ChopperCommand', 'CrazyClimber', 'Defender', 'Demon_attack', 'DoubleDunk',
+        'ElevatorAction', 'Enduro', 'FishingDerby', 'Freeway', 'Frostbite', 'Gopher', 'Gravitar',
+        'Hero', 'IceHockey', 'Jamesbond', 'JourneyEscape', 'Kangaroo', 'Krull', 'KungFuMaster',
+        'MpntezumaRevenge', 'MsPacman', 'NameThisGame', 'Phoenix', 'Pitfall', 'Pooyan',
+        'PrivateEye', 'Qbert', 'Riverraid', 'RoadRunner', 'Robotank', 'Seaquest', 'Skiing',
+        'Solaris', 'SpaceInvaders', 'StarGunner', 'Tennis', 'TimePilot', 'Tutankham', 'UpNDown',
+        'Venture', 'VideoPinball', 'WizardOfWor', 'VarsRevenge', 'Zaxxon']
     dict_discrete_gym = []
 
     env = env_fn()
-    dict_gym = ['CarRacing', 'LunarLander','Pong']
+    dict_gym = ['CarRacing', 'LunarLander','Pong','AirRaid','Adventure', 'AirRaid', 'Alien', 'Amidar',
+                          'Assault', 'Asterix', 'Asteroids', 'Atlantis',
+        'BankHeist', 'BattleZone', 'BeamRider', 'Berzerk', 'Bowling', 'Boxing', 'Breakout', 'Carnival',
+        'Centipede', 'ChopperCommand', 'CrazyClimber', 'Defender', 'Demon_attack', 'DoubleDunk',
+        'ElevatorAction', 'Enduro', 'FishingDerby', 'Freeway', 'Frostbite', 'Gopher', 'Gravitar',
+        'Hero', 'IceHockey', 'Jamesbond', 'JourneyEscape', 'Kangaroo', 'Krull', 'KungFuMaster',
+        'MpntezumaRevenge', 'MsPacman', 'NameThisGame', 'Phoenix', 'Pitfall', 'Pooyan',
+        'PrivateEye', 'Qbert', 'Riverraid', 'RoadRunner', 'Robotank', 'Seaquest', 'Skiing',
+        'Solaris', 'SpaceInvaders', 'StarGunner', 'Tennis', 'TimePilot', 'Tutankham', 'UpNDown',
+        'Venture', 'VideoPinball', 'WizardOfWor', 'VarsRevenge', 'Zaxxon']
     # This code is specific for pycolab
     if gym_or_pyco == 'gym':
         None

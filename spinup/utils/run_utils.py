@@ -156,7 +156,20 @@ def call_experiment(exp_name, thunk, seed=0, num_cpu=1, data_dir=None,
 
     def thunk_plus():
         # Make 'env_fn' from 'env_name'
-        dict_gym = ['CarRacing-v0', 'LunarLander-v2','Pong-v0','Pong-v4']
+
+        dict_gym = ['CarRacing-v0', 'LunarLander-v2','Pong-v0','Pong-v4','Adventure-v0','AirRaid-v0','AirRaid-v4','Adventure-v0','Adventure-v4','Alien-v0','Alien-v4','Amidar-v0',
+                    'Amidar-v4','Assault-v0','Assault-v4','Asterix-v0','Asteroids-v0','Asteroids-v4','Atlantis-v0','Atlantis-v4','BankHeist-v0','BankHeist-v4','BattleZone-v0',
+                    'BattleZone-v4','BeamRider-v0','BeamRider-v4','Berzerk-v0','Berzerk-v4','Bowling-v0','Bowling-v4','Boxing-v0','Boxing-v4','Breakout-v0','Breakout-v4',
+                    'Carnival-v0','Carnival-v4','Centipede-v0','Centipede-v4','ChopperCommand-v0','ChopperCommand-v4','CrazyClimber-v0','CrazyClimber-v4','Defender-v0','Defender-v4',
+                    'DemonAttack-v0','DemonAttack-v4','DoubleDunk-v0','DoubleDunk-v4','ElevatorAction-v0','ElevatorAction-v4','Enduro-v0','Enduro-v4','FishingDerby-v0','FishingDerby-v4',
+                    'Freeway-v0','Freeway-v4','Frostbite-v0','Frostbite-v4','Gopher-v0','Gopher-v4','Gravitar-v0','Gravitar-v4','Hero-v0','Hero-v4','IceHockey-v0','IceHockey-v4',
+                    'JamesBond-v0','JamesBond-v4','JourneyEscape-v0','JourneyEscape-v4','Kangaroo-v0','Kangaroo-v4','Krull-v0','Krull-v4','KungFuMaster-v0','KungFuMaster-v4',
+                    'MontezumaRevenge-v0','MontezumaRevenge-v4','MsPacman-v0','MsPacman-v4','NameThisGame-v0','NameThisGame-v4','Phoenix-v0','Phoenix-v4','PitFall-v0','PitFall-v4',
+                    'Pooyan-v0','Pooyan-v4','PrivateEye-v0','PrivateEye-v4','Qbert-v0','Qbert-v4','Riverraid-v0','Riverraid-v4','RoadRunner-v0','RoadRunner-v4','Robotank-v0',
+                    'Seaquest-v0','Seaquest-v4','Skiing-v0','Skiing-v4','Solaris-v0','Solaris-v4','SpaceInvaders-v0','SpaceInvaders-v4','StarGunner-v0','StarGunner-v4','Tennis-v0',
+                    'Tennis-v4','TimePilot-v0','TimePilot-v4','Tutankham-v0','Tutankham-v4','UpNDown-v0','UpNDown-v4','Venture-v0','Venture-v4','VideoPinball-v0','VideoPinball-v4',
+                    'WizardOfWor-v0','WizardOfWor-v4','YarsRevenge-v0','YarsRevenge-v4','Zaxxon-v0','Zaxxon-v4']
+
         """HOT FIX : Make pycoenv training and saving of parameters possible here."""
         if kwargs['env_name'] in dict_gym:
             import gym
