@@ -20,6 +20,7 @@ before_script:
  - conda activate cc
  - conda update --all
 # - conda install -y tensorflow setuptools seaborn mpi4py cloudpickle joblib tqdm
+ - apt-get install libcr-dev mpich3 mpich3-doc
  - pip install mpi4py
  - conda install -y tensorflow
  - cd -
