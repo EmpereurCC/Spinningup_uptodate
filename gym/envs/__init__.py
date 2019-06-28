@@ -651,3 +651,10 @@ register(
     entry_point='pycolab.examples.apprehend-v0',
     reward_threshold=4
 )
+
+#gym-connect
+
+register(
+    id='numberlink-v0',
+    entry_point='gym_number_link.envs:NumberLink',
+)

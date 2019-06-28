@@ -2,14 +2,14 @@
     "ac_kwargs":	{},
     "actor_critic":	"mlp_actor_critic",
     "clip_ratio":	0.2,
-    "env_fn":	"<function call_experiment.<locals>.thunk_plus.<locals>.<lambda> at 0x7fe543b18598>",
+    "env_fn":	"<function call_experiment.<locals>.thunk_plus.<locals>.<lambda> at 0x7fd809839598>",
     "epochs":	1000,
     "exp_name":	"cmd_ppo_pyco",
     "gamma":	0.99,
     "gym_or_pyco":	"gym",
     "lam":	0.97,
     "logger":	{
-        "<spinup.utils.logx.EpochLogger object at 0x7fe543b23be0>":	{
+        "<spinup.utils.logx.EpochLogger object at 0x7fd809844c50>":	{
             "epoch_dict":	{},
             "exp_name":	"cmd_ppo_pyco",
             "first_row":	true,
@@ -27,11 +27,11 @@
         "exp_name":	"cmd_ppo_pyco",
         "output_dir":	"/home/clement/Documents/spinningup_instadeep/data/cmd_ppo_pyco/cmd_ppo_pyco_s0"
     },
-    "max_ep_len":	1000,
+    "max_ep_len":	100000,
     "pi_lr":	0.0003,
     "save_freq":	10,
     "seed":	0,
-    "steps_per_epoch":	4000,
+    "steps_per_epoch":	400000,
     "target_kl":	0.01,
     "tensorboard_path":	"/home/clement/spinningup/tensorboard",
     "train_pi_iters":	80,

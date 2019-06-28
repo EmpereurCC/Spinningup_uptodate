@@ -168,7 +168,7 @@ def call_experiment(exp_name, thunk, seed=0, num_cpu=1, data_dir=None,
                     'Pooyan-v0','Pooyan-v4','PrivateEye-v0','PrivateEye-v4','Qbert-v0','Qbert-v4','Riverraid-v0','Riverraid-v4','RoadRunner-v0','RoadRunner-v4','Robotank-v0',
                     'Seaquest-v0','Seaquest-v4','Skiing-v0','Skiing-v4','Solaris-v0','Solaris-v4','SpaceInvaders-v0','SpaceInvaders-v4','StarGunner-v0','StarGunner-v4','Tennis-v0',
                     'Tennis-v4','TimePilot-v0','TimePilot-v4','Tutankham-v0','Tutankham-v4','UpNDown-v0','UpNDown-v4','Venture-v0','Venture-v4','VideoPinball-v0','VideoPinball-v4',
-                    'WizardOfWor-v0','WizardOfWor-v4','YarsRevenge-v0','YarsRevenge-v4','Zaxxon-v0','Zaxxon-v4']
+                    'WizardOfWor-v0','WizardOfWor-v4','YarsRevenge-v0','YarsRevenge-v4','Zaxxon-v0','Zaxxon-v4','numberlink-v0']
 
         """HOT FIX : Make pycoenv training and saving of parameters possible here."""
         if kwargs['env_name'] in dict_gym:

@@ -23,7 +23,7 @@ class PPOBuffer:
         if gym_or_pyco == 'pyco':
             self.obs_buf = np.zeros((size, obs_dim[0], obs_dim[1], 1), dtype=np.float32)
         else:
-            self.obs_buf = np.zeros((size, obs_dim[0], obs_dim[1], 3), dtype=np.float32)
+            self.obs_buf = np.zeros((size, obs_dim[0], obs_dim[1], obs_dim[2]), dtype=np.float32)
         self.act_buf = np.zeros(core.combined_shape(size, act_dim), dtype=np.float32)
         self.adv_buf = np.zeros(size, dtype=np.float32)
         self.rew_buf = np.zeros(size, dtype=np.float32)
@@ -214,7 +214,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         'MpntezumaRevenge', 'MsPacman', 'NameThisGame', 'Phoenix', 'Pitfall', 'Pooyan',
         'PrivateEye', 'Qbert', 'Riverraid', 'RoadRunner', 'Robotank', 'Seaquest', 'Skiing',
         'Solaris', 'SpaceInvaders', 'StarGunner', 'Tennis', 'TimePilot', 'Tutankham', 'UpNDown',
-        'Venture', 'VideoPinball', 'WizardOfWor', 'VarsRevenge', 'Zaxxon']
+        'Venture', 'VideoPinball', 'WizardOfWor', 'VarsRevenge', 'Zaxxon','Numberlink']
     dict_discrete_gym = []
 
     env = env_fn()
@@ -227,7 +227,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         'MpntezumaRevenge', 'MsPacman', 'NameThisGame', 'Phoenix', 'Pitfall', 'Pooyan',
         'PrivateEye', 'Qbert', 'Riverraid', 'RoadRunner', 'Robotank', 'Seaquest', 'Skiing',
         'Solaris', 'SpaceInvaders', 'StarGunner', 'Tennis', 'TimePilot', 'Tutankham', 'UpNDown',
-        'Venture', 'VideoPinball', 'WizardOfWor', 'VarsRevenge', 'Zaxxon']
+        'Venture', 'VideoPinball', 'WizardOfWor', 'VarsRevenge', 'Zaxxon','Numberlink']
     # This code is specific for pycolab
     if gym_or_pyco == 'gym':
         None
@@ -249,7 +249,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     if gym_or_pyco == 'pyco':
         x_ph = tf.placeholder(tf.float32, shape=(1, obs_dim[0], obs_dim[1], 1))
     else:
-        x_ph = tf.placeholder(tf.float32, shape=(1, obs_dim[0], obs_dim[1], 3))
+        x_ph = tf.placeholder(tf.float32, shape=(1, obs_dim[0], obs_dim[1], obs_dim[2]))
     # a_ph = core.placeholders_from_spaces(env.action_space)
     if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
         a_ph = tf.placeholder(tf.uint8, shape=(1))
@@ -412,7 +412,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     start_time = time.time()
     o, r, d, ep_ret, ep_len = env.reset(), 0, False, 0, 0
     if gym_or_pyco == 'gym':
-        o = o.reshape(1, obs_dim[0], obs_dim[1], 3)
+        o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
     else:
         o = rgb_input_pyco(o, obs_dim)
         o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
@@ -437,7 +437,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
                 o = rgb_input_pyco(o, obs_dim)
                 o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
             else:
-                o = o.reshape(1, obs_dim[0], obs_dim[1], 3)
+                o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
 
             if r is None:
                 ep_ret += 0
@@ -465,7 +465,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
 
                 o, r, d, ep_ret, ep_len = env.reset(), 0, False, 0, 0
                 if gym_or_pyco == 'gym':
-                    o = o.reshape(1, obs_dim[0], obs_dim[1], 3)
+                    o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
                 else:
                     o = rgb_input_pyco(o, obs_dim)
                     o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
