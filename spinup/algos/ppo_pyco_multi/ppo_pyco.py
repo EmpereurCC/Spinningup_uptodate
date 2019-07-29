@@ -124,6 +124,7 @@ with early stopping based on approximate KL
 def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=dict(), seed=0,
              steps_per_epoch=10000, epochs=1000, gamma=0.99, clip_ratio=0.2, pi_lr=3e-4,
              vf_lr=1e-3, train_pi_iters=80, train_v_iters=80, lam=0.97, max_ep_len=10000,
+             num_copy=2,
              target_kl=0.01, logger_kwargs=dict(), save_freq=10, tensorboard_path = '/home/clement/spinningup/tensorboard'):
     """
 
@@ -230,9 +231,16 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         'Venture', 'VideoPinball', 'WizardOfWor', 'VarsRevenge', 'Zaxxon','Numberlink']
     # This code is specific for pycolab
     if gym_or_pyco == 'gym':
-        None
+        #env_dict = {}
+        #for i in range(num_copy):
+        #    env_dict["env_{}".format(i)] = env
+        env_list = []
+        for i in range(num_copy):
+            env_list.append(env)
     else:
-        env = env()
+        env_list = []
+        for i in range(num_copy):
+            env_list.append(env())
 
     obs_dim = env.observation_space.shape
     # act_dim = env.action_space.n
@@ -247,12 +255,12 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     # Inputs to computation graph
     # x_ph, a_ph = core.placeholders_from_spaces(env.observation_space, env.action_space)
     if gym_or_pyco == 'pyco':
-        x_ph = tf.placeholder(tf.float32, shape=(1, obs_dim[0], obs_dim[1], 1))
+        x_ph = tf.placeholder(tf.float32, shape=(num_copy, obs_dim[0], obs_dim[1], 1))
     else:
-        x_ph = tf.placeholder(tf.float32, shape=(1, obs_dim[0], obs_dim[1], obs_dim[2]))
+        x_ph = tf.placeholder(tf.float32, shape=(num_copy, obs_dim[0], obs_dim[1], obs_dim[2]))
     # a_ph = core.placeholders_from_spaces(env.action_space)
     if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
-        a_ph = tf.placeholder(tf.uint8, shape=(1))
+        a_ph = tf.placeholder(tf.uint8, shape=(num_copy))
 
     elif gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
         a_ph = tf.placeholder(tf.float32, shape=(env.action_space.shape[0]))
@@ -411,11 +419,14 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
 
     start_time = time.time()
     o, r, d, ep_ret, ep_len = env.reset(), 0, False, 0, 0
+
     if gym_or_pyco == 'gym':
         o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
     else:
         o = rgb_input_pyco(o, obs_dim)
         o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
+        concat = np.repeat(o,num_copy)
+        concat = concat.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
 
     # Main loop: collect experience in env and update/log each epoch
     for epoch in range(epochs):
