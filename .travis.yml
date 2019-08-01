@@ -3,25 +3,23 @@ language: python
 python: "3.6"
 
 env :
- - FLAGS="ppo_pyco --env warehouse_manager-v0 --num_cpu 1 --tensorboard_path 'home/travis/build/EmpereurCC/spinningup_instadeep2'"
- - FLAGS="ppo_pyco --env warehouse_manager-v0 --num_cpu 4 --tensorboard_path 'home/travis/build/EmpereurCC/spinningup_instadeep2'"
- - FLAGS="ppo_pyco --env fluvial_natation-v1 --num_cpu 2 --tensorboard_path 'home/travis/build/EmpereurCC/spinningup_instadeep2'"
+ - FLAGS="ppo_pyco --env warehouse_manager-v0 --num_cpu 1"
+ - FLAGS="ppo_pyco --env warehouse_manager-v0 --num_cpu 2"
+ - FLAGS="ppo_pyco --env fluvial_natation-v1 --num_cpu 2"
  
 
 before_script:
  - cd
- - if [ ! -d ~/miniconda3/bin ] ; then rm -rf ~/miniconda3/ ; fi ;
- - if [ ! -d ~/miniconda3/bin ] ; then wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh ; fi ;
- - if [ ! -d ~/miniconda3/bin ] ; then bash ~/miniconda.sh -b -p $HOME/miniconda3 ; fi ;
- - eval "$($HOME/miniconda3/bin/conda shell.bash hook)"
+ - if [ ! -d ~/anaconda3/bin ] ; then rm -rf ~/anaconda3/ ; fi ;
+ - if [ ! -d ~/anaconda3/bin ] ; then wget --progress=dot:mega https://repo.anaconda.com/archive/Anaconda3-2019.03-Linux-x86_64.sh -O ~/anaconda.sh ; fi ;
+ - if [ ! -d ~/anaconda3/bin ] ; then bash ~/anaconda.sh -b -p $HOME/anaconda3 ; fi ;
+ - eval "$($HOME/anaconda3/bin/conda shell.bash hook)"
  - conda init
  - conda update -y conda
- - conda create -y -n cc python=3.6
+ - conda create -y -n cc python=3.6 anaconda || true
  - conda activate cc
- - conda update --all
- - sudo apt-get install libcr-dev mpich mpich-doc
- - pip install mpi4py
- - conda install -y tensorflow setuptools seaborn cloudpickle joblib tqdm
+ - conda install -y -c conda-forge mpi4py 
+ - conda install -y tensorflow setuptools seaborn mpi4py cloudpickle joblib tqdm
  - cd -
     
 script:
@@ -29,7 +27,6 @@ script:
    - pip install -e .
    - cd gym
    - pip install -e .
-   #- pip install 'gym[all]'
    - cd ../PycoGYM/gym_pyco
    - pip install -e .
    - cd ../..
@@ -44,8 +41,7 @@ deploy:
   provider: pages
   skip_cleanup: true
   keep_history : true
-  local_dir: tensorboard/  # or remove this line to upload from root of repo
+  #local_dir: tensorboard/  # or remove this line to upload from root of repo
   github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
   on:
     branch: master
-
