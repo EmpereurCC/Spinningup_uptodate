@@ -654,6 +654,11 @@ register(
 
 #gym-connect
 
+#register(
+#    id='numberlink-v0',
+#    entry_point='gym_number_link.envs:NumberLink',
+#)
+
 register(
     id='numberlink-v0',
     entry_point='gym_number_link.envs:NumberLink',
