@@ -41,7 +41,7 @@ deploy:
   provider: pages
   skip_cleanup: true
   keep_history : true
-  local_dir: tensorboard/  # or remove this line to upload from root of repo
+  #local_dir: tensorboard/  # or remove this line to upload from root of repo
   github_token: $GITHUB_TOKEN # Set in travis-ci.org dashboard
   on:
     branch: master
