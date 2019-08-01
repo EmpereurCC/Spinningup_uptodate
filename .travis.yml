@@ -29,9 +29,10 @@ script:
    - pip install -e .
    - cd ../PycoGYM/gym_pyco
    - pip install -e .
+   - cd ../gym-number-link
+   - pip install -e .
    - cd ../..
-   - python spinup/run.py $FLAGS
-   
+   - python spinup/run.py $FLAGS   
 
 cache:
   directories:
