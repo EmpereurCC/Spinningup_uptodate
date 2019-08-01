@@ -176,7 +176,8 @@ class EnvRegistry(object):
          #   del gym.envs.registry.env_specs[env_name]
 
         if id in self.env_specs:
-            raise error.Error('Cannot re-register id: {}'.format(id))
+            del gym.envs.registry.env_specs[id]
+            #raise error.Error('Cannot re-register id: {}'.format(id))
         self.env_specs[id] = EnvSpec(id, **kwargs)
 
 # Have a global registry
