@@ -171,9 +171,9 @@ class EnvRegistry(object):
 
     def register(self, id, **kwargs):
 
-        env_name = 'numberlink-v0'
-        if env_name in gym.envs.registry.env_specs:
-            del gym.envs.registry.env_specs[env_name]
+        #env_name = 'numberlink-v0'
+        #if env_name in gym.envs.registry.env_specs:
+         #   del gym.envs.registry.env_specs[env_name]
 
         if id in self.env_specs:
             raise error.Error('Cannot re-register id: {}'.format(id))
