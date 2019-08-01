@@ -121,7 +121,7 @@ with early stopping based on approximate KL
 """
 
 
-def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=dict(), seed=0,
+def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=dict(), seed=0,
              steps_per_epoch=10000, epochs=1000, gamma=0.99, clip_ratio=0.2, pi_lr=3e-4,
              vf_lr=1e-3, train_pi_iters=80, train_v_iters=80, lam=0.97, max_ep_len=10000,
              num_copy=2,
@@ -241,6 +241,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         env_list = []
         for i in range(num_copy):
             env_list.append(env())
+            env_list[i-1].reset()
 
     obs_dim = env.observation_space.shape
     # act_dim = env.action_space.n
@@ -341,15 +342,15 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         # inputs = {k:v for k,v in zip(all_phs, buf.get())}
         if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
-                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a,
+                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi,
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
-                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a[0],
+                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi[0],
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         else:
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
-                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a,
+                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi,
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
 
         # pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent], feed_dict=inputs)
@@ -361,7 +362,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
 
                 _, kl = sess.run([train_pi, approx_kl],
-                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
+                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi, adv_ph: buf.adv_buf,
                                             ret_ph: buf.ret_buf})
                 kl = mpi_avg(kl)
                 if kl > 1.5 * target_kl:
@@ -370,7 +371,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
 
                 _, kl = sess.run([train_pi, approx_kl],
-                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a[0], adv_ph: buf.adv_buf,
+                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi[0], adv_ph: buf.adv_buf,
                                             ret_ph: buf.ret_buf})
                 kl = mpi_avg(kl)
                 if kl > 1.5 * target_kl:
@@ -379,7 +380,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             else:
 
                 _, kl = sess.run([train_pi, approx_kl],
-                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
+                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi, adv_ph: buf.adv_buf,
                                             ret_ph: buf.ret_buf})
                 kl = mpi_avg(kl)
                 if kl > 1.5 * target_kl:
@@ -389,27 +390,27 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         logger.store(StopIter=i)
         for _ in range(train_v_iters):
             if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
-                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
+                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi, adv_ph: buf.adv_buf,
                                              ret_ph: buf.ret_buf})
             if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
-                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a[0], adv_ph: buf.adv_buf,
+                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi[0], adv_ph: buf.adv_buf,
                                              ret_ph: buf.ret_buf})
             else:
-                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
+                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi, adv_ph: buf.adv_buf,
                                              ret_ph: buf.ret_buf})
 
         # Log changes from update
         if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
             pi_l_new, v_l_new, kl, cf = sess.run([pi_loss, v_loss, approx_kl, clipfrac],
-                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a,
+                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi,
                                                             adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
             pi_l_new, v_l_new, kl, cf = sess.run([pi_loss, v_loss, approx_kl, clipfrac],
-                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a[0],
+                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi[0],
                                                             adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         else:
             pi_l_new, v_l_new, kl, cf = sess.run([pi_loss, v_loss, approx_kl, clipfrac],
-                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a,
+                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi,
                                                             adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
 
         logger.store(LossPi=pi_l_old, LossV=v_l_old,
@@ -425,8 +426,9 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     else:
         o = rgb_input_pyco(o, obs_dim)
         o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
-        concat = np.repeat(o,num_copy)
-        concat = concat.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
+        o_feed = np.repeat(o,num_copy)
+        o_feed = o_feed.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
+        # now we have several starting points
 
     # Main loop: collect experience in env and update/log each epoch
     for epoch in range(epochs):
@@ -435,51 +437,61 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         for t in range(local_steps_per_epoch):
 
             # a, v_t, logp_t = sess.run(get_action_ops, feed_dict={x_ph: o.board.reshape(1, -1)})
-            a, v_t, logp_t = sess.run(get_action_ops, feed_dict={x_ph: o})
+            a_multi, v_t, logp_t = sess.run(get_action_ops, feed_dict={x_ph: o_feed})
             # save and log
-            buf.store(o, a, r, v_t, logp_t)
             # buf.store(o.board.reshape(1,-1), a, r, v_t, logp_t)
 
             # obs, act, rew, val, logp
             logger.store(VVals=v_t)
 
-            o, r, d, _ = env.step(a[0])
-            if gym_or_pyco == 'pyco':
-                o = rgb_input_pyco(o, obs_dim)
-                o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
-            else:
-                o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
+            #o, r, d, _ = env.step(a[0])
+            o_feed=[]
+            ep_len_list=np.zeros(num_copy)
+            for i in range(num_copy):
+                o, r, d,   = env_list[i-1].step(a_multi[i-1])
 
-            if r is None:
-                ep_ret += 0
-                r = 0
+                if gym_or_pyco == 'pyco':
+                    o = rgb_input_pyco(o, obs_dim)
+                    o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
+                    o_feed = o_feed.append(o)
+                else:
+                    o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
 
-            else:
-                ep_ret += r
+                if r is None:
+                    ep_ret += 0
+                    r = 0
 
-            ep_len += 1
+                else:
+                    ep_ret += r
 
-            terminal = d or (ep_len == max_ep_len)
-            if terminal or (t == local_steps_per_epoch - 1):
-                num_ep += 1
-                if not (terminal):
-                    print('Warning: trajectory cut off by epoch at %d steps.' % ep_len)
+                ep_len_list[i-1] += 1
+
+                terminal = d or (sum(ep_len_list) == max_ep_len)
+                if terminal or (t == local_steps_per_epoch - 1):
+                    num_ep += 1
+                    if not (terminal):
+                        print('Warning: trajectory cut off by epoch at %d steps.' % ep_len)
                 # if trajectory didn't reach terminal state, bootstrap value target
-                last_val = r if d else sess.run(v, feed_dict={x_ph: o})
-                buf.finish_path(last_val)
-                if terminal:
+                    last_val = r if d else sess.run(v, feed_dict={x_ph: o_feed})
+                    buf.finish_path(last_val)
+                    if terminal:
                     # only save EpRet / EpLen if trajectory finished
-                    logger.store(EpRet=ep_ret, EpLen=ep_len)
-                    summary_ep = summary_ep + [ep_ret]
+                        logger.store(EpRet=ep_ret, EpLen=ep_len)
+                        summary_ep = summary_ep + [ep_ret]
                     # summary = tf.Summary(value=[tf.Summary.Value(tag="mean_ep_ret", simple_value=summary_ep)])
                     # test_writer.add_summary(summary, num_ep)
 
-                o, r, d, ep_ret, ep_len = env.reset(), 0, False, 0, 0
+                    o, r, d, ep_ret, ep_len = env_list[i-1].reset(), 0, False, 0, 0
                 if gym_or_pyco == 'gym':
                     o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
                 else:
                     o = rgb_input_pyco(o, obs_dim)
                     o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
+                    o_feed[i-1] = o
+
+                    # now we have several starting points
+
+            buf.store(o_feed, a_multi, r, v_t, logp_t)
 
         # Save model
         if (epoch % save_freq == 0) or (epoch == epochs - 1):
@@ -548,6 +560,7 @@ if __name__ == '__main__':
     parser.add_argument('--steps', type=int, default=4000)
     parser.add_argument('--epochs', type=int, default=50)
     parser.add_argument('--exp_name', type=str, default='ppo_pyco')
+    parser.add_argument('--num_copy', type=int, default=3)
     args = parser.parse_args()
 
     mpi_fork(args.cpu)  # run parallel code with mpi

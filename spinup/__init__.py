@@ -7,6 +7,8 @@ from spinup.algos.trpo.trpo import trpo
 from spinup.algos.vpg.vpg import vpg
 from spinup.algos.ppo_rgb.ppo_rgb import ppo_rgb
 from spinup.algos.ppo_pyco.ppo_pyco import ppo_pyco
+from spinup.algos.ppo_pyco_multi.ppo_pyco_multi import ppo_pyco_multi
+
 #from spinup.algos.random_agent import random_agent
 
 # Loggers
