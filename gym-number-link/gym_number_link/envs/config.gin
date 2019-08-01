@@ -1,0 +1,6 @@
+# default configuration of the NumberLink environment
+NumberLink.board_size = 30
+NumberLink.num_wires = 15
+NumberLink.board_generation = "generator"
+NumberLink.seed = 42
+NumberLink.numberlink_path = "/Users/vcourgeau/go/src/deepswarm/environments/gym-number-link/gym_number_link/envs/"
