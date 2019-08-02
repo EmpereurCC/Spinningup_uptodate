@@ -2,22 +2,22 @@
     "ac_kwargs":	{},
     "actor_critic":	"mlp_actor_critic",
     "clip_ratio":	0.2,
-    "env_fn":	"<function call_experiment.<locals>.thunk_plus.<locals>.<lambda> at 0x7f549bb0d598>",
+    "env_fn":	"<function call_experiment.<locals>.thunk_plus.<locals>.<lambda> at 0x7f98f2178488>",
     "epochs":	1000,
     "exp_name":	"cmd_ppo_pyco",
     "gamma":	0.99,
-    "gym_or_pyco":	"gym",
+    "gym_or_pyco":	"pyco",
     "lam":	0.97,
     "logger":	{
-        "<spinup.utils.logx.EpochLogger object at 0x7f549bb18c50>":	{
+        "<spinup.utils.logx.EpochLogger object at 0x7f98f217c1d0>":	{
             "epoch_dict":	{},
             "exp_name":	"cmd_ppo_pyco",
             "first_row":	true,
             "log_current_row":	{},
             "log_headers":	[],
-            "output_dir":	"/home/clement/Documents/spinningup_instadeep/data/cmd_ppo_pyco/cmd_ppo_pyco_s0",
+            "output_dir":	"/home/ccollgon/git/spinningup_instadeep2/data/cmd_ppo_pyco/cmd_ppo_pyco_s0",
             "output_file":	{
-                "<_io.TextIOWrapper name='/home/clement/Documents/spinningup_instadeep/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/progress.txt' mode='w' encoding='UTF-8'>":	{
+                "<_io.TextIOWrapper name='/home/ccollgon/git/spinningup_instadeep2/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/progress.txt' mode='w' encoding='ANSI_X3.4-1968'>":	{
                     "mode":	"w"
                 }
             }
@@ -25,15 +25,15 @@
     },
     "logger_kwargs":	{
         "exp_name":	"cmd_ppo_pyco",
-        "output_dir":	"/home/clement/Documents/spinningup_instadeep/data/cmd_ppo_pyco/cmd_ppo_pyco_s0"
+        "output_dir":	"/home/ccollgon/git/spinningup_instadeep2/data/cmd_ppo_pyco/cmd_ppo_pyco_s0"
     },
-    "max_ep_len":	1000,
+    "max_ep_len":	350,
     "pi_lr":	0.0003,
     "save_freq":	10,
     "seed":	0,
-    "steps_per_epoch":	4000,
+    "steps_per_epoch":	10000,
     "target_kl":	0.01,
-    "tensorboard_path":	"/home/clement/spinningup/tensorboard",
+    "tensorboard_path":	"/home/ccollgon/git/spinningup_instadeep2",
     "train_pi_iters":	80,
     "train_v_iters":	80,
     "vf_lr":	0.001
