@@ -169,7 +169,7 @@ if __name__ == '__main__':
     algorithms and the plot / test_policy utilities.
 
     For utilities, it only checks which thing to run, and calls the
-    appropriate file, passing all arguments through.
+    appropriate file, passing all arguments through.ppo_pyco_multi --env warehouse_manager-v0 --steps_per_epoch
 
     For algorithms, it sets up an ExperimentGrid object and uses the
     ExperimentGrid run routine to execute each possible experiment.

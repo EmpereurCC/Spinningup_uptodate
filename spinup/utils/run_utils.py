@@ -205,6 +205,31 @@ def call_experiment(exp_name, thunk, seed=0, num_cpu=1, data_dir=None,
                 kwargs['env_fn'] = lambda: game
                 del kwargs['env_name']
 
+            elif exp_name == 'cmd_ppo_pyco_multi':
+                env_name = kwargs['env_name']
+
+                def wrapPyco(game: Engine) -> Env:
+                    return PycoEnv(game)
+
+                def test_pyco():
+                    ''' Test training a small agent in a simple environment '''
+                    game_name = env_name
+                    mg = importlib.import_module('pycolab.examples.' + game_name)
+                    if env_name == 'warehouse_manager-v0':
+                        game = partial(wrapPyco, mg.make_game(level=0))
+                    elif env_name == 'better_scrolly_maze-v0':
+                        game = partial(wrapPyco, mg.make_game(level=0))
+                    elif env_name == 'aperture-v0':
+                        game = partial(wrapPyco, mg.make_game(level_idx=0))
+                    elif env_name == 'shockwave-v0':
+                        game = partial(wrapPyco, mg.make_game(level=0))
+                    else:
+                        game = partial(wrapPyco, mg.make_game())
+                    return game
+
+                game = test_pyco()
+                kwargs['env_fn'] = lambda: game
+                del kwargs['env_name']
         # Fork into multiple processes
         mpi_fork(num_cpu)
 

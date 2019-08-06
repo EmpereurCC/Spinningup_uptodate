@@ -243,15 +243,15 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
             env_list.append(env())
             env_list[i-1].reset()
 
-    obs_dim = env.observation_space.shape
+    obs_dim = env().observation_space.shape
     # act_dim = env.action_space.n
-    if env.action_space == 4:
-        act_dim = env.action_space
+    if env().action_space == 4:
+        act_dim = env().action_space
     else:
-        act_dim = env.action_space.n
+        act_dim = env().action_space.n
 
     # Share information about action space with policy architecture
-    ac_kwargs['action_space'] = env.action_space
+    ac_kwargs['action_space'] = env().action_space
 
     # Inputs to computation graph
     # x_ph, a_ph = core.placeholders_from_spaces(env.observation_space, env.action_space)
@@ -264,7 +264,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
         a_ph = tf.placeholder(tf.uint8, shape=(num_copy))
 
     elif gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
-        a_ph = tf.placeholder(tf.float32, shape=(env.action_space.shape[0]))
+        a_ph = tf.placeholder(tf.float32, shape=(env().action_space.shape[0]))
 
     else:
         a_ph = tf.placeholder(tf.uint8, shape=(1))
@@ -275,15 +275,15 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
     # pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, **ac_kwargs)
     # actor_critic with relational policy
     # pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='relational_categorical_policy', action_space = env.action_space.n,  **ac_kwargs)
-    if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
+    if gym_or_pyco == 'gym' and isinstance(env().action_space, Discrete):
         pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='baseline_categorical_policy',
-                                                    action_space=env.action_space.n)
-    elif gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
+                                                    action_space=env().action_space.n)
+    elif gym_or_pyco == 'gym' and isinstance(env().action_space, Box):
         pi, logp, logp_pi, v = actor_critic(x_ph, a_ph, policy='relational_gaussian_policy',
-                                            action_space=env.action_space.shape[0])
+                                            action_space=env().action_space.shape[0])
     else:
         pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='baseline_categorical_policy',
-                                                    action_space=env.action_space.n)
+                                                    action_space=env().action_space.n)
 
     # Need all placeholders in *this* order later (to zip with data from buffer)
     all_phs = [x_ph, a_ph, adv_ph, ret_ph, logp_old_ph]
@@ -340,11 +340,11 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
 
     def update(epoch):
         # inputs = {k:v for k,v in zip(all_phs, buf.get())}
-        if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
+        if gym_or_pyco == 'gym' and isinstance(env().action_space, Discrete):
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
                                               feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi,
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
-        if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
+        if gym_or_pyco == 'gym' and isinstance(env().action_space, Box):
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
                                               feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi[0],
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
@@ -359,7 +359,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
 
         # Training
         for i in range(train_pi_iters):
-            if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
+            if gym_or_pyco == 'gym' and isinstance(env().action_space, Discrete):
 
                 _, kl = sess.run([train_pi, approx_kl],
                                  feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi, adv_ph: buf.adv_buf,
@@ -368,7 +368,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
                 if kl > 1.5 * target_kl:
                     logger.log('Early stopping at step %d due to reaching max kl.' % i)
                     break
-            if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
+            if gym_or_pyco == 'gym' and isinstance(env().action_space, Box):
 
                 _, kl = sess.run([train_pi, approx_kl],
                                  feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi[0], adv_ph: buf.adv_buf,
@@ -389,10 +389,10 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
 
         logger.store(StopIter=i)
         for _ in range(train_v_iters):
-            if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
+            if gym_or_pyco == 'gym' and isinstance(env().action_space, Discrete):
                 sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi, adv_ph: buf.adv_buf,
                                              ret_ph: buf.ret_buf})
-            if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
+            if gym_or_pyco == 'gym' and isinstance(env().action_space, Box):
                 sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi[0], adv_ph: buf.adv_buf,
                                              ret_ph: buf.ret_buf})
             else:
@@ -400,11 +400,11 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
                                              ret_ph: buf.ret_buf})
 
         # Log changes from update
-        if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
+        if gym_or_pyco == 'gym' and isinstance(env().action_space, Discrete):
             pi_l_new, v_l_new, kl, cf = sess.run([pi_loss, v_loss, approx_kl, clipfrac],
                                                  feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi,
                                                             adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
-        if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
+        if gym_or_pyco == 'gym' and isinstance(env().action_space, Box):
             pi_l_new, v_l_new, kl, cf = sess.run([pi_loss, v_loss, approx_kl, clipfrac],
                                                  feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi[0],
                                                             adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
@@ -419,7 +419,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
                      DeltaLossV=(v_l_new - v_l_old))
 
     start_time = time.time()
-    o, r, d, ep_ret, ep_len = env.reset(), 0, False, 0, 0
+    o, r, d, ep_ret, ep_len = env().reset(), 0, False, 0, 0
 
     if gym_or_pyco == 'gym':
         o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
@@ -427,7 +427,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
         o = rgb_input_pyco(o, obs_dim)
         o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
         o_feed = np.repeat(o,num_copy)
-        o_feed = o_feed.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
+        o_feed.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
         # now we have several starting points
 
     # Main loop: collect experience in env and update/log each epoch
@@ -448,12 +448,12 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
             o_feed=[]
             ep_len_list=np.zeros(num_copy)
             for i in range(num_copy):
-                o, r, d,   = env_list[i-1].step(a_multi[i-1])
+                o, r, d, _   = env_list[i].step(a_multi[i])
 
                 if gym_or_pyco == 'pyco':
                     o = rgb_input_pyco(o, obs_dim)
                     o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
-                    o_feed = o_feed.append(o)
+                    o_feed.append(o)
                 else:
                     o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
 
@@ -569,7 +569,7 @@ if __name__ == '__main__':
 
     logger_kwargs = setup_logger_kwargs(args.exp_name, args.seed)
 
-    ppo_pyco(lambda: gym.make(args.env), actor_critic=core.mlp_actor_critic,
+    ppo_pyco_multi(lambda: gym.make(args.env), actor_critic=core.mlp_actor_critic,
              ac_kwargs=dict(hidden_sizes=[args.hid] * args.l), gamma=args.gamma,
              seed=args.seed, steps_per_epoch=args.steps, epochs=args.epochs,
              logger_kwargs=logger_kwargs)
