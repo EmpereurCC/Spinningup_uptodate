@@ -235,11 +235,17 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         env = env()
 
     obs_dim = env.observation_space.shape
-    # act_dim = env.action_space.n
     if env.action_space == 4:
         act_dim = env.action_space
+    elif type(env.action_space.shape[0])==int:
+        act_dim = env.action_space.shape
     else:
         act_dim = env.action_space.n
+
+
+
+
+    #act_dim = env.action_space.shape
 
     # Share information about action space with policy architecture
     ac_kwargs['action_space'] = env.action_space
@@ -270,10 +276,10 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='baseline_categorical_policy',
                                                     action_space=env.action_space.n)
     elif gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
-        pi, logp, logp_pi, v = actor_critic(x_ph, a_ph, policy='relational_gaussian_policy',
+        pi, logp, logp_pi, v = actor_critic(x_ph, a_ph, policy='baseline_gaussian_policy',
                                             action_space=env.action_space.shape[0])
     else:
-        pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='baseline_categorical_policy',
+        pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='relational_gaussian_policy',
                                                     action_space=env.action_space.n)
 
     # Need all placeholders in *this* order later (to zip with data from buffer)
