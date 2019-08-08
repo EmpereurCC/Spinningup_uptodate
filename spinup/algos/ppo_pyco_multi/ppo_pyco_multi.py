@@ -241,7 +241,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
         env_list = []
         for i in range(num_copy):
             env_list.append(env())
-            env_list[i-1].reset()
+            env_list[i].reset()
 
     obs_dim = env().observation_space.shape
     # act_dim = env.action_space.n
@@ -427,7 +427,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
         o = rgb_input_pyco(o, obs_dim)
         o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
         o_feed = np.repeat(o,num_copy)
-        o_feed.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
+        o_feed = o_feed.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
         # now we have several starting points
 
     # Main loop: collect experience in env and update/log each epoch
@@ -482,12 +482,12 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
                     # test_writer.add_summary(summary, num_ep)
 
                     o, r, d, ep_ret, ep_len = env_list[i-1].reset(), 0, False, 0, 0
-                if gym_or_pyco == 'gym':
-                    o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
-                else:
-                    o = rgb_input_pyco(o, obs_dim)
-                    o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
-                    o_feed[i-1] = o
+                    if gym_or_pyco == 'gym':
+                        o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
+                    else:
+                        o = rgb_input_pyco(o, obs_dim)
+                        o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
+                        o_feed[i-1] = o
 
                     # now we have several starting points
 
