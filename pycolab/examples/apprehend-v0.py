@@ -127,7 +127,7 @@ class BallSprite(prefab_sprites.MazeWalker):
 
     # If we've left the board altogether, then the game is lost.
     if self.virtual_position[0] >= board.shape[0]:
-      the_plot.add_reward(-1)
+      #the_plot.add_reward(-1)
       the_plot.terminate_episode()
 
 

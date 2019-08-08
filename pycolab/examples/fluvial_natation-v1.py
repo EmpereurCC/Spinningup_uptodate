@@ -105,7 +105,7 @@ class PlayerSprite(prefab_sprites.MazeWalker):
     del layers, backdrop, things   # Unused.
 
     # Move one square left on even game iterations.
-    if the_plot.frame % 3 == 0:
+    if the_plot.frame % 2 == 0:
       self._west(board, the_plot)
 
     # Apply swimming commands.
