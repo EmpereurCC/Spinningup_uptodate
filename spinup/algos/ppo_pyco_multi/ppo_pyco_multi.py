@@ -18,13 +18,13 @@ class PPOBuffer:
     for calculating the advantages of state-action pairs.
     """
 
-    def __init__(self, gym_or_pyco, obs_dim, act_dim, size, gamma=0.99, lam=0.95):
+    def __init__(self, gym_or_pyco, obs_dim, act_dim, size, gamma=0.99, lam=0.95, num_copy=2):
         # self.obs_buf = np.zeros(core.combined_shape(size, obs_dim), dtype=np.float32)
         if gym_or_pyco == 'pyco':
-            self.obs_buf = np.zeros((size, obs_dim[0], obs_dim[1], 1), dtype=np.float32)
+            self.obs_buf = np.zeros((size, obs_dim[0]*num_copy, obs_dim[1], 1), dtype=np.float32)
         else:
             self.obs_buf = np.zeros((size, obs_dim[0], obs_dim[1], obs_dim[2]), dtype=np.float32)
-        self.act_buf = np.zeros(core.combined_shape(size, act_dim), dtype=np.float32)
+        self.act_buf = np.zeros((size, act_dim, num_copy), dtype=np.float32)
         self.adv_buf = np.zeros(size, dtype=np.float32)
         self.rew_buf = np.zeros(size, dtype=np.float32)
         self.ret_buf = np.zeros(size, dtype=np.float32)
@@ -33,13 +33,14 @@ class PPOBuffer:
         self.gamma, self.lam = gamma, lam
         self.ptr, self.path_start_idx, self.max_size = 0, 0, size
 
-    def store(self, obs, act, rew, val, logp):
+    def store(self, obs, act, rew, val, logp,num_copy):
         """
         Append one timestep of agent-environment interaction to the buffer.
         """
         assert self.ptr < self.max_size  # buffer has to have room so you can store
         self.obs_buf[self.ptr] = obs
-        self.act_buf[self.ptr] = act
+        for i in range(num_copy):
+            self.act_buf[self.ptr,:,i]=act[i]
         self.rew_buf[self.ptr] = rew
         self.val_buf[self.ptr] = val
         self.logp_buf[self.ptr] = logp
@@ -256,9 +257,11 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
     # Inputs to computation graph
     # x_ph, a_ph = core.placeholders_from_spaces(env.observation_space, env.action_space)
     if gym_or_pyco == 'pyco':
-        x_ph = tf.placeholder(tf.float32, shape=(num_copy, obs_dim[0], obs_dim[1], 1))
+        #x_ph = tf.placeholder(tf.float32, shape=( num_copy, obs_dim[0], obs_dim[1], 1))
+
+        x_ph = tf.placeholder(tf.float32, shape=( 1, obs_dim[0]*num_copy, obs_dim[1], 1))
     else:
-        x_ph = tf.placeholder(tf.float32, shape=(num_copy, obs_dim[0], obs_dim[1], obs_dim[2]))
+        x_ph = tf.placeholder(tf.float32, shape=( 1, obs_dim[0]*num_copy, obs_dim[1], obs_dim[2]))
     # a_ph = core.placeholders_from_spaces(env.action_space)
     if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
         a_ph = tf.placeholder(tf.uint8, shape=(num_copy))
@@ -267,7 +270,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
         a_ph = tf.placeholder(tf.float32, shape=(env().action_space.shape[0]))
 
     else:
-        a_ph = tf.placeholder(tf.uint8, shape=(1))
+        a_ph = tf.placeholder(tf.uint8, shape=(num_copy))
 
     adv_ph, ret_ph, logp_old_ph = core.placeholders(None, None, None)
 
@@ -293,7 +296,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
 
     # Experience buffer
     local_steps_per_epoch = int(steps_per_epoch / num_procs())
-    buf = PPOBuffer(gym_or_pyco, obs_dim, act_dim, local_steps_per_epoch, gamma, lam)
+    buf = PPOBuffer(gym_or_pyco, obs_dim, act_dim, local_steps_per_epoch, gamma, lam, num_copy)
 
     # Count variables
     var_counts = tuple(core.count_vars(scope) for scope in ['pi', 'v'])
@@ -426,8 +429,14 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
     else:
         o = rgb_input_pyco(o, obs_dim)
         o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
-        o_feed = np.repeat(o,num_copy)
-        o_feed = o_feed.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
+        o_feed = np.concatenate((o,o))
+        #o_feed = o_feed.reshape(1, obs_dim[0]*num_copy, obs_dim[1], 1)
+        obs_buf = o_feed
+        for i in range(num_copy - 2):
+            obs_buf = np.concatenate((obs_buf, o_feed[i + 2]))
+        obs_buf = obs_buf.reshape(1, obs_dim[0] * num_copy, obs_dim[1], 1)
+        o_feed = obs_buf
+        #o_feed = o_feed.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
         # now we have several starting points
 
     # Main loop: collect experience in env and update/log each epoch
@@ -438,6 +447,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
 
             # a, v_t, logp_t = sess.run(get_action_ops, feed_dict={x_ph: o.board.reshape(1, -1)})
             a_multi, v_t, logp_t = sess.run(get_action_ops, feed_dict={x_ph: o_feed})
+            a_multi = np.repeat(a_multi[0],num_copy)
             # save and log
             # buf.store(o.board.reshape(1,-1), a, r, v_t, logp_t)
 
@@ -445,7 +455,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
             logger.store(VVals=v_t)
 
             #o, r, d, _ = env.step(a[0])
-            o_feed=[]
+            o_feed_temp=[]
             ep_len_list=np.zeros(num_copy)
             for i in range(num_copy):
                 o, r, d, _   = env_list[i].step(a_multi[i])
@@ -453,9 +463,10 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
                 if gym_or_pyco == 'pyco':
                     o = rgb_input_pyco(o, obs_dim)
                     o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
-                    o_feed.append(o)
+                    o_feed_temp.append(o)
                 else:
                     o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
+
 
                 if r is None:
                     ep_ret += 0
@@ -487,11 +498,31 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
                     else:
                         o = rgb_input_pyco(o, obs_dim)
                         o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
-                        o_feed[i-1] = o
+                        o_feed = np.concatenate((o, o))
+                        # o_feed = o_feed.reshape(1, obs_dim[0]*num_copy, obs_dim[1], 1)
+                        obs_buf = o_feed
+                        for i in range(num_copy - 2):
+                            obs_buf = np.concatenate((obs_buf, o_feed[i + 2]))
+                        obs_buf = obs_buf.reshape(1, obs_dim[0] * num_copy, obs_dim[1], 1)
+                        o_feed = obs_buf
+                        # o_feed = o_feed.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
+                        # now we have several starting points
 
                     # now we have several starting points
 
-            buf.store(o_feed, a_multi, r, v_t, logp_t)
+            o_feed = np.concatenate((o_feed_temp[0], o_feed_temp[1]))
+            obs_buf = o_feed
+            for i in range(num_copy - 2):
+                obs_buf = np.concatenate((obs_buf, o_feed[i + 2]))
+
+            obs_buf = obs_buf.reshape(1, obs_dim[0] * num_copy, obs_dim[1], 1)
+            o_feed = obs_buf
+            #obs_buf=np.concatenate((o_feed_temp[0],o_feed_temp[1]))
+            #for i in range(num_copy-2):
+            #    obs_buf=np.concatenate((obs_buf,o_feed[i+2]))
+            #obs_buf = obs_buf.reshape( 1, obs_dim[0]*num_copy, obs_dim[1], 1)
+
+            buf.store(obs_buf, a_multi, r, v_t, logp_t,num_copy)
 
         # Save model
         if (epoch % save_freq == 0) or (epoch == epochs - 1):
