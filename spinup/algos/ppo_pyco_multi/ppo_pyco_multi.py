@@ -26,7 +26,7 @@ class PPOBuffer:
             self.obs_buf = np.zeros((size, obs_dim[0], obs_dim[1], obs_dim[2]), dtype=np.float32)
         self.act_buf = np.zeros((size, act_dim, num_copy), dtype=np.float32)
         self.adv_buf = np.zeros(size, dtype=np.float32)
-        self.rew_buf = np.zeros(size, dtype=np.float32)
+        self.rew_buf = np.zeros((size, num_copy), dtype=np.float32)
         self.ret_buf = np.zeros(size, dtype=np.float32)
         self.val_buf = np.zeros(size, dtype=np.float32)
         self.logp_buf = np.zeros(size, dtype=np.float32)
@@ -46,7 +46,7 @@ class PPOBuffer:
         self.logp_buf[self.ptr] = logp
         self.ptr += 1
 
-    def finish_path(self, last_val=0):
+    def finish_path(self, last_val=0,j=0):
         """
         Call this at the end of a trajectory, or when one gets cut off
         by an epoch ending. This looks back in the buffer to where the
@@ -61,8 +61,9 @@ class PPOBuffer:
         for timesteps beyond the arbitrary episode horizon (or epoch cutoff).
         """
 
+        rew_buf_multi = self.rew_buf[:,j]
         path_slice = slice(self.path_start_idx, self.ptr)
-        rews = np.append(self.rew_buf[path_slice], last_val)
+        rews = np.append(rew_buf_multi[path_slice], last_val)
         vals = np.append(self.val_buf[path_slice], last_val)
 
         # the next two lines implement GAE-Lambda advantage calculation
@@ -422,7 +423,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
                      DeltaLossV=(v_l_new - v_l_old))
 
     start_time = time.time()
-    o, r, d, ep_ret, ep_len = env().reset(), 0, False, 0, 0
+    o, r, d, ep_ret, ep_len_list = env().reset(), np.zeros(num_copy), np.zeros(num_copy,dtype=bool), np.zeros(num_copy), np.zeros(num_copy)
 
     if gym_or_pyco == 'gym':
         o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
@@ -456,9 +457,9 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
 
             #o, r, d, _ = env.step(a[0])
             o_feed_temp=[]
-            ep_len_list=np.zeros(num_copy)
+
             for i in range(num_copy):
-                o, r, d, _   = env_list[i].step(a_multi[i])
+                o, r[i], d[i], _   = env_list[i].step(a_multi[i])
 
                 if gym_or_pyco == 'pyco':
                     o = rgb_input_pyco(o, obs_dim)
@@ -469,44 +470,53 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
 
 
                 if r is None:
-                    ep_ret += 0
-                    r = 0
+                    ep_ret[i] += 0
+                    r[i] = 0
 
                 else:
-                    ep_ret += r
+                    ep_ret[i] += r[i]
 
-                ep_len_list[i-1] += 1
+                ep_len_list[i] += 1
 
-                terminal = d or (sum(ep_len_list) == max_ep_len)
-                if terminal or (t == local_steps_per_epoch - 1):
+                terminal = d[i] or (sum(ep_len_list) == max_ep_len)
+                if terminal :
                     num_ep += 1
-                    if not (terminal):
-                        print('Warning: trajectory cut off by epoch at %d steps.' % ep_len)
-                # if trajectory didn't reach terminal state, bootstrap value target
-                    last_val = r if d else sess.run(v, feed_dict={x_ph: o_feed})
-                    buf.finish_path(last_val)
-                    if terminal:
-                    # only save EpRet / EpLen if trajectory finished
-                        logger.store(EpRet=ep_ret, EpLen=ep_len)
-                        summary_ep = summary_ep + [ep_ret]
-                    # summary = tf.Summary(value=[tf.Summary.Value(tag="mean_ep_ret", simple_value=summary_ep)])
-                    # test_writer.add_summary(summary, num_ep)
+                    logger.store(EpRet=ep_ret[i], EpLen=ep_len_list[i])
+                    summary_ep = summary_ep + [ep_ret[i]]
+                    o, r[i], d[i], ep_ret[i], ep_len_list[i] = env_list[i].reset(), 0, False, 0, 0
 
-                    o, r, d, ep_ret, ep_len = env_list[i-1].reset(), 0, False, 0, 0
-                    if gym_or_pyco == 'gym':
-                        o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
-                    else:
-                        o = rgb_input_pyco(o, obs_dim)
-                        o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
-                        o_feed = np.concatenate((o, o))
-                        # o_feed = o_feed.reshape(1, obs_dim[0]*num_copy, obs_dim[1], 1)
-                        obs_buf = o_feed
-                        for i in range(num_copy - 2):
-                            obs_buf = np.concatenate((obs_buf, o_feed[i + 2]))
-                        obs_buf = obs_buf.reshape(1, obs_dim[0] * num_copy, obs_dim[1], 1)
-                        o_feed = obs_buf
-                        # o_feed = o_feed.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
-                        # now we have several starting points
+
+                #if terminal or (t == local_steps_per_epoch - 1):
+                if (t == local_steps_per_epoch - 1):
+                    num_ep += 2
+                    for i in range(num_copy):
+                        if not d[i]:
+                            print('Warning: trajectory cut off by epoch at %d steps.' % ep_len_list[i])
+                    # if trajectory didn't reach terminal state, bootstrap value target
+                        last_val = r[i] if d[i] else sess.run(v, feed_dict={x_ph: o_feed})
+                        buf.finish_path(last_val,i)
+                        if d[i]:
+                        # only save EpRet / EpLen if trajectory finished
+                            logger.store(EpRet=ep_ret, EpLen=ep_len)
+                            summary_ep = summary_ep + [ep_ret]
+                        # summary = tf.Summary(value=[tf.Summary.Value(tag="mean_ep_ret", simple_value=summary_ep)])
+                        # test_writer.add_summary(summary, num_ep)
+
+                        o, r[i], d[i], ep_ret[i], ep_len_list[i] = env_list[i].reset(), 0, False, 0, 0
+                        if gym_or_pyco == 'gym':
+                            o = o.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
+                        else:
+                            o = rgb_input_pyco(o, obs_dim)
+                            o = o.reshape(1, obs_dim[0], obs_dim[1], 1)
+                            o_feed = np.concatenate((o, o))
+                            # o_feed = o_feed.reshape(1, obs_dim[0]*num_copy, obs_dim[1], 1)
+                            obs_buf = o_feed
+                            for i in range(num_copy - 2):
+                                obs_buf = np.concatenate((obs_buf, o_feed[i + 2]))
+                            obs_buf = obs_buf.reshape(1, obs_dim[0] * num_copy, obs_dim[1], 1)
+                            o_feed = obs_buf
+                            # o_feed = o_feed.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
+                            # now we have several starting points
 
                     # now we have several starting points
 
