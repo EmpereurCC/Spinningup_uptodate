@@ -176,7 +176,7 @@ def relational_categorical_policy(x,a, hidden=[256], output_size = 2, activation
     logp_pi = tf.reduce_sum(tf.one_hot(pi, depth=act_dim) * logp_all, axis=1)
     return pi, logp, logp_pi, logits, max_E_hat
 
-def baseline_categorical_policy(x,a, hidden=[256],output_size = 2, activation = tf.nn.relu, final_activation=tf.nn.softmax, act_dim=2):
+def baseline_categorical_policy(x,a, hidden=[256],output_size = 2, activation = tf.nn.relu, final_activation=tf.nn.softmax, nb_copy=2, act_dim=2):
     x, shape = attention_CNN(x)
     new_x = residual_CNN(x)
     new_x = residual_CNN(new_x)
@@ -186,8 +186,8 @@ def baseline_categorical_policy(x,a, hidden=[256],output_size = 2, activation = 
     logp_all = tf.nn.log_softmax(logits)
     pi = tf.squeeze(tf.random.categorical(logits, 1), axis=1)
     #logp = tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1)
-    logp1 = tf.split(tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1),2)[0]
-    logp2 = tf.split(tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1),2)[1]
+    logp1 = tf.split(tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1),nb_copy)[0]
+    logp2 = tf.split(tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1),nb_copy)[1]
     logp_pi = tf.reduce_sum(tf.one_hot(pi, depth=act_dim) * logp_all, axis=1)
     return pi, logp1, logp2, logp_pi, logits, max_E_hat
 
@@ -233,7 +233,7 @@ def relational_gaussian_policy(x, a, act_dim, output_activation, hidden_sizes=(6
 Actor-Critics
 """
 def mlp_actor_critic(x, a, hidden_sizes=(64,64), activation=tf.tanh,
-                     output_activation=None, policy=None, action_space=None):
+                     output_activation=None, policy=None, action_space=None, num_copy=2):
 
     # default policy builder depends on action space
     if policy == 'relational_categorical_policy' :
@@ -256,7 +256,7 @@ def mlp_actor_critic(x, a, hidden_sizes=(64,64), activation=tf.tanh,
         elif policy == relational_gaussian_policy:
             pi, logp, logp_pi, max_E_hat = policy(x, a, action_space, output_activation, hidden_sizes=(64,64), activation = tf.nn.relu)
         else:
-            pi, logp1, logp2, logp_pi, logits, max_E_hat = policy(x, a, output_size=action_space, act_dim=action_space )
+            pi, logp1, logp2, logp_pi, logits, max_E_hat = policy(x, a, output_size=action_space, act_dim=action_space, nb_copy = num_copy )
 
 
     with tf.variable_scope('v'):

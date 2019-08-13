@@ -126,7 +126,7 @@ with early stopping based on approximate KL
 def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=dict(), seed=0,
              steps_per_epoch=10000, epochs=1000, gamma=0.99, clip_ratio=0.2, pi_lr=3e-4,
              vf_lr=1e-3, train_pi_iters=80, train_v_iters=80, lam=0.97, max_ep_len=10000,
-             num_copy=2,
+             num_copy=3,
              target_kl=0.01, logger_kwargs=dict(), save_freq=10, tensorboard_path = '/home/clement/spinningup/tensorboard'):
     """
 
@@ -287,7 +287,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
                                             action_space=env().action_space.shape[0])
     else:
         pi, logp1, logp2, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='baseline_categorical_policy',
-                                                    action_space=env().action_space.n)
+                                                    action_space=env().action_space.n, num_copy = num_copy )
 
     # Need all placeholders in *this* order later (to zip with data from buffer)
     all_phs = [x_ph, a_ph, adv_ph, ret_ph, logp_old_ph]
@@ -434,7 +434,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
         #o_feed = o_feed.reshape(1, obs_dim[0]*num_copy, obs_dim[1], 1)
         obs_buf = o_feed
         for i in range(num_copy - 2):
-            obs_buf = np.concatenate((obs_buf, o_feed[i + 2]))
+            obs_buf = np.concatenate((obs_buf, o))
         obs_buf = obs_buf.reshape(1, obs_dim[0] * num_copy, obs_dim[1], 1)
         o_feed = obs_buf
         #o_feed = o_feed.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
@@ -512,7 +512,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
                             # o_feed = o_feed.reshape(1, obs_dim[0]*num_copy, obs_dim[1], 1)
                             obs_buf = o_feed
                             for i in range(num_copy - 2):
-                                obs_buf = np.concatenate((obs_buf, o_feed[i + 2]))
+                                obs_buf = np.concatenate((obs_buf, o))
                             obs_buf = obs_buf.reshape(1, obs_dim[0] * num_copy, obs_dim[1], 1)
                             o_feed = obs_buf
                             # o_feed = o_feed.reshape(num_copy, obs_dim[0], obs_dim[1], 1)
@@ -523,7 +523,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
             o_feed = np.concatenate((o_feed_temp[0], o_feed_temp[1]))
             obs_buf = o_feed
             for i in range(num_copy - 2):
-                obs_buf = np.concatenate((obs_buf, o_feed[i + 2]))
+                obs_buf = np.concatenate((obs_buf, o_feed_temp[i + 2]))
 
             obs_buf = obs_buf.reshape(1, obs_dim[0] * num_copy, obs_dim[1], 1)
             o_feed = obs_buf
