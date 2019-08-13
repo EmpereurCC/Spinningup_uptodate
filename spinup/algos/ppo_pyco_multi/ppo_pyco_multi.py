@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 import gym
 import time
-import spinup.algos.ppo_pyco.core as core
+import spinup.algos.ppo_pyco_multi.core as core
 from gym.spaces import Box, Discrete
 from spinup.utils.logx import EpochLogger
 from spinup.utils.mpi_tf import MpiAdamOptimizer, sync_all_params
@@ -286,7 +286,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
         pi, logp, logp_pi, v = actor_critic(x_ph, a_ph, policy='relational_gaussian_policy',
                                             action_space=env().action_space.shape[0])
     else:
-        pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='baseline_categorical_policy',
+        pi, logp1, logp2, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='baseline_categorical_policy',
                                                     action_space=env().action_space.n)
 
     # Need all placeholders in *this* order later (to zip with data from buffer)
@@ -304,7 +304,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
     logger.log('\nNumber of parameters: \t pi: %d, \t v: %d\n' % var_counts)
 
     # PPO objectives
-    ratio = tf.exp(logp - logp_old_ph)  # pi(a|s) / pi_old(a|s)
+    ratio = (tf.exp(logp1 - logp_old_ph) + tf.exp(logp2 - logp_old_ph))/2  # pi(a|s) / pi_old(a|s)
     min_adv = tf.where(adv_ph > 0, (1 + clip_ratio) * adv_ph, (1 - clip_ratio) * adv_ph)
     pi_loss = -tf.reduce_mean(tf.minimum(ratio * adv_ph, min_adv))
 
@@ -315,8 +315,8 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
     v_loss = tf.reduce_mean((ret_ph - v) ** 2)
 
     # Info (useful to watch during learning)
-    approx_kl = tf.reduce_mean(logp_old_ph - logp)  # a sample estimate for KL-divergence, easy to compute
-    approx_ent = tf.reduce_mean(-logp)  # a sample estimate for entropy, also easy to compute
+    approx_kl = (tf.reduce_mean(logp_old_ph - logp1)+tf.reduce_mean(logp_old_ph - logp2))/2  # a sample estimate for KL-divergence, easy to compute
+    approx_ent = tf.reduce_mean(-logp1)+tf.reduce_mean(-logp2)  # a sample estimate for entropy, also easy to compute
     clipped = tf.logical_or(ratio > (1 + clip_ratio), ratio < (1 - clip_ratio))
     clipfrac = tf.reduce_mean(tf.cast(clipped, tf.float32))
 
@@ -346,15 +346,15 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
         # inputs = {k:v for k,v in zip(all_phs, buf.get())}
         if gym_or_pyco == 'gym' and isinstance(env().action_space, Discrete):
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
-                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi,
+                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o_feed, a_ph: a_multi,
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         if gym_or_pyco == 'gym' and isinstance(env().action_space, Box):
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
-                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi[0],
+                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o_feed, a_ph: a_multi[0],
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         else:
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
-                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi,
+                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o_feed, a_ph: a_multi,
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
 
         # pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent], feed_dict=inputs)
@@ -384,7 +384,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
             else:
 
                 _, kl = sess.run([train_pi, approx_kl],
-                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi, adv_ph: buf.adv_buf,
+                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o_feed, a_ph: a_multi, adv_ph: buf.adv_buf,
                                             ret_ph: buf.ret_buf})
                 kl = mpi_avg(kl)
                 if kl > 1.5 * target_kl:
@@ -400,7 +400,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
                 sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi[0], adv_ph: buf.adv_buf,
                                              ret_ph: buf.ret_buf})
             else:
-                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi, adv_ph: buf.adv_buf,
+                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o_feed, a_ph: a_multi, adv_ph: buf.adv_buf,
                                              ret_ph: buf.ret_buf})
 
         # Log changes from update
@@ -414,7 +414,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
                                                             adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         else:
             pi_l_new, v_l_new, kl, cf = sess.run([pi_loss, v_loss, approx_kl, clipfrac],
-                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a_multi,
+                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o_feed, a_ph: a_multi,
                                                             adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
 
         logger.store(LossPi=pi_l_old, LossV=v_l_old,
@@ -497,7 +497,7 @@ def ppo_pyco_multi(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_k
                         buf.finish_path(last_val,i)
                         if d[i]:
                         # only save EpRet / EpLen if trajectory finished
-                            logger.store(EpRet=ep_ret, EpLen=ep_len)
+                            logger.store(EpRet=ep_ret, EpLen=sum(ep_len_list))
                             summary_ep = summary_ep + [ep_ret]
                         # summary = tf.Summary(value=[tf.Summary.Value(tag="mean_ep_ret", simple_value=summary_ep)])
                         # test_writer.add_summary(summary, num_ep)

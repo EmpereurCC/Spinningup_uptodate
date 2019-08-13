@@ -185,9 +185,11 @@ def baseline_categorical_policy(x,a, hidden=[256],output_size = 2, activation = 
     logits = output_layer(max_E_hat, hidden, output_size, activation, final_activation)
     logp_all = tf.nn.log_softmax(logits)
     pi = tf.squeeze(tf.random.categorical(logits, 1), axis=1)
-    logp = tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1)
+    #logp = tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1)
+    logp1 = tf.split(tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1),2)[0]
+    logp2 = tf.split(tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1),2)[1]
     logp_pi = tf.reduce_sum(tf.one_hot(pi, depth=act_dim) * logp_all, axis=1)
-    return pi, logp, logp_pi, logits, max_E_hat
+    return pi, logp1, logp2, logp_pi, logits, max_E_hat
 
 
 
@@ -254,7 +256,7 @@ def mlp_actor_critic(x, a, hidden_sizes=(64,64), activation=tf.tanh,
         elif policy == relational_gaussian_policy:
             pi, logp, logp_pi, max_E_hat = policy(x, a, action_space, output_activation, hidden_sizes=(64,64), activation = tf.nn.relu)
         else:
-            pi, logp, logp_pi, logits, max_E_hat = policy(x, a, output_size=action_space, act_dim=action_space )
+            pi, logp1, logp2, logp_pi, logits, max_E_hat = policy(x, a, output_size=action_space, act_dim=action_space )
 
 
     with tf.variable_scope('v'):
@@ -265,4 +267,4 @@ def mlp_actor_critic(x, a, hidden_sizes=(64,64), activation=tf.tanh,
     elif policy == relational_gaussian_policy:
         return pi, logp, logp_pi, v
     else:
-        return pi, logp, logp_pi, v, logits
+        return pi, logp1, logp2, logp_pi, v, logits
