@@ -125,7 +125,7 @@ with early stopping based on approximate KL
 """
 
 
-def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=dict(), seed=435,
+def ppo_pyco_load(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=dict(), seed=435,
              steps_per_epoch=4000, epochs=50000, gamma=0.99, clip_ratio=0.1, pi_lr=3e-4,
              vf_lr=3e-4, train_pi_iters=80, train_v_iters=80, lam=0.97, max_ep_len=350,
              target_kl=0.01, logger_kwargs=dict(), save_freq=10, tensorboard_path = '/home/clement/spinningup/tensorboard'):
@@ -136,7 +136,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             The environment must satisfy the OpenAI Gym API.
 
         actor_critic: A function which takes in placeholder symbols
-            for state, ``x_ph``, and action, ``a_ph``, and returns the main
+            for state, ``model['x']``, and action, ``model['pi']``, and returns the main
             outputs from the agent's Tensorflow computation graph:
 
             ===========  ================  ======================================
@@ -145,13 +145,13 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             ``pi``       (batch, act_dim)  | Samples actions from policy given
                                            | states.
             ``logp``     (batch,)          | Gives log probability, according to
-                                           | the policy, of taking actions ``a_ph``
-                                           | in states ``x_ph``.
+                                           | the policy, of taking actions ``model['pi']``
+                                           | in states ``model['x']``.
             ``logp_pi``  (batch,)          | Gives log probability, according to
                                            | the policy, of the action sampled by
                                            | ``pi``.
             ``v``        (batch,)          | Gives the value estimate for states
-                                           | in ``x_ph``. (Critical: make sure
+                                           | in ``model['x']``. (Critical: make sure
                                            | to flatten this!)
             ===========  ================  ======================================
 
@@ -255,40 +255,35 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     # Share information about action space with policy architecture
     ac_kwargs['action_space'] = env.action_space
 
-    # Inputs to computation graph
-    # x_ph, a_ph = core.placeholders_from_spaces(env.observation_space, env.action_space)
-    if gym_or_pyco == 'pyco':
-        x_ph = tf.placeholder(tf.float32, shape=(1, obs_dim[0], obs_dim[1], 1))
-    else:
-        x_ph = tf.placeholder(tf.float32, shape=(1, obs_dim[0], obs_dim[1], obs_dim[2]))
-    # a_ph = core.placeholders_from_spaces(env.action_space)
-    if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
-        a_ph = tf.placeholder(tf.uint8, shape=(1))
-
-    elif gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
-        a_ph = tf.placeholder(tf.float32, shape=(env.action_space.shape[0]))
-
-    else:
-        a_ph = tf.placeholder(tf.uint8, shape=(1))
+    #Trying to restore graph
+    sess = tf.Session()
+    export_dir = "/home/clement/Documents/spinningup_instadeep/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save"
+    model = restore_tf_graph(sess, export_dir)
 
     adv_ph, ret_ph, logp_old_ph = core.placeholders(None, None, None)
 
+
+
     # Main outputs from computation graph
-    # pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, **ac_kwargs)
+    # pi, logp, logp_pi, v, logits = actor_critic(model['x'], model['pi'], **ac_kwargs)
     # actor_critic with relational policy
-    # pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='relational_categorical_policy', action_space = env.action_space.n,  **ac_kwargs)
+    # pi, logp, logp_pi, v, logits = actor_critic(model['x'], model['pi'], policy='relational_categorical_policy', action_space = env.action_space.n,  **ac_kwargs)
     if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
-        pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='baseline_categorical_policy',
+        pi, logp, logp_pi, v, logits = actor_critic(model['x'], model['pi'], policy='baseline_categorical_policy',
                                                     action_space=env.action_space.n)
     elif gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
-        pi, logp, logp_pi, v = actor_critic(x_ph, a_ph, policy='baseline_gaussian_policy',
+        pi, logp, logp_pi, v = actor_critic(model['x'], model['pi'], policy='baseline_gaussian_policy',
                                             action_space=env.action_space.shape[0])
     else:
-        pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='relational_categorical_policy',
+        pi, logp, logp_pi, v, logits = actor_critic(model['x'], model['pi'], policy='relational_categorical_policy',
                                                     action_space=env.action_space.n)
+    # PPO objectives
+    ratio = tf.exp(logp - logp_old_ph)  # pi(a|s) / pi_old(a|s)
+    min_adv = tf.where(adv_ph > 0, (1 + clip_ratio) * adv_ph, (1 - clip_ratio) * adv_ph)
+    pi_loss = -tf.reduce_mean(tf.minimum(ratio * adv_ph, min_adv))
 
     # Need all placeholders in *this* order later (to zip with data from buffer)
-    all_phs = [x_ph, a_ph, adv_ph, ret_ph, logp_old_ph]
+    all_phs = [model['x'], model['pi'], adv_ph, ret_ph, logp_old_ph]
 
     # Every step, get: action, value, and logprob
     get_action_ops = [pi, v, logp_pi]
@@ -301,16 +296,14 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     var_counts = tuple(core.count_vars(scope) for scope in ['pi', 'v'])
     logger.log('\nNumber of parameters: \t pi: %d, \t v: %d\n' % var_counts)
 
-    # PPO objectives
-    ratio = tf.exp(logp - logp_old_ph)  # pi(a|s) / pi_old(a|s)
-    min_adv = tf.where(adv_ph > 0, (1 + clip_ratio) * adv_ph, (1 - clip_ratio) * adv_ph)
-    pi_loss = -tf.reduce_mean(tf.minimum(ratio * adv_ph, min_adv))
+
 
     # tensorboard test
     with tf.name_scope('pi_loss'):
         core.variable_summaries(pi_loss)
 
     v_loss = tf.reduce_mean((ret_ph - v) ** 2)
+
 
     # Info (useful to watch during learning)
     approx_kl = tf.reduce_mean(logp_old_ph - logp)  # a sample estimate for KL-divergence, easy to compute
@@ -322,8 +315,6 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     train_pi = MpiAdamOptimizer(learning_rate=pi_lr).minimize(pi_loss)
     train_v = MpiAdamOptimizer(learning_rate=vf_lr).minimize(v_loss)
 
-    sess = tf.Session()
-    # sess = tf_debug.LocalCLIDebugWrapperSession(sess)
 
     # tensorboard
     merged = tf.summary.merge_all()
@@ -344,21 +335,20 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     sess.run(sync_all_params())
 
     # Setup model saving
-    logger.setup_tf_saver(sess, inputs={'x': x_ph}, outputs={'pi': pi, 'v': v})
-
+    logger.setup_tf_saver(sess, inputs={'x': model['x']}, outputs={'pi': model['pi'], 'v': model['v']})
     def update(epoch):
         # inputs = {k:v for k,v in zip(all_phs, buf.get())}
         if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
-                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a,
+                                              feed_dict={logp_old_ph: buf.logp_buf, model['x']: o, model['pi']: a,
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
-                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a[0],
+                                              feed_dict={logp_old_ph: buf.logp_buf, model['x']: o, model['pi']: a[0],
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         else:
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
-                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a,
+                                              feed_dict={logp_old_ph: buf.logp_buf, model['x']: o, model['pi']: a,
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
 
         # pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent], feed_dict=inputs)
@@ -370,7 +360,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
 
                 _, kl = sess.run([train_pi, approx_kl],
-                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
+                                 feed_dict={logp_old_ph: buf.logp_buf, model['x']: o, model['pi']: a, adv_ph: buf.adv_buf,
                                             ret_ph: buf.ret_buf})
                 kl = mpi_avg(kl)
                 if kl > 1.5 * target_kl:
@@ -379,7 +369,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
 
                 _, kl = sess.run([train_pi, approx_kl],
-                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a[0], adv_ph: buf.adv_buf,
+                                 feed_dict={logp_old_ph: buf.logp_buf, model['x']: o, model['pi']: a[0], adv_ph: buf.adv_buf,
                                             ret_ph: buf.ret_buf})
                 kl = mpi_avg(kl)
                 if kl > 1.5 * target_kl:
@@ -388,7 +378,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             else:
 
                 _, kl = sess.run([train_pi, approx_kl],
-                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
+                                 feed_dict={logp_old_ph: buf.logp_buf, model['x']: o, model['pi']: a, adv_ph: buf.adv_buf,
                                             ret_ph: buf.ret_buf})
                 kl = mpi_avg(kl)
                 if kl > 1.5 * target_kl:
@@ -398,27 +388,27 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         logger.store(StopIter=i)
         for _ in range(train_v_iters):
             if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
-                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
+                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, model['x']: o, model['pi']: a, adv_ph: buf.adv_buf,
                                              ret_ph: buf.ret_buf})
             if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
-                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a[0], adv_ph: buf.adv_buf,
+                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, model['x']: o, model['pi']: a[0], adv_ph: buf.adv_buf,
                                              ret_ph: buf.ret_buf})
             else:
-                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
+                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, model['x']: o, model['pi']: a, adv_ph: buf.adv_buf,
                                              ret_ph: buf.ret_buf})
 
         # Log changes from update
         if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
             pi_l_new, v_l_new, kl, cf = sess.run([pi_loss, v_loss, approx_kl, clipfrac],
-                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a,
+                                                 feed_dict={logp_old_ph: buf.logp_buf, model['x']: o, model['pi']: a,
                                                             adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
             pi_l_new, v_l_new, kl, cf = sess.run([pi_loss, v_loss, approx_kl, clipfrac],
-                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a[0],
+                                                 feed_dict={logp_old_ph: buf.logp_buf, model['x']: o, model['pi']: a[0],
                                                             adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         else:
             pi_l_new, v_l_new, kl, cf = sess.run([pi_loss, v_loss, approx_kl, clipfrac],
-                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a,
+                                                 feed_dict={logp_old_ph: buf.logp_buf, model['x']: o, model['pi']: a,
                                                             adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
 
         logger.store(LossPi=pi_l_old, LossV=v_l_old,
@@ -441,9 +431,9 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         logits_debug = []
         for t in range(local_steps_per_epoch):
 
-            # a, v_t, logp_t = sess.run(get_action_ops, feed_dict={x_ph: o.board.reshape(1, -1)})
-            a, v_t, logp_t = sess.run(get_action_ops, feed_dict={x_ph: o})
-            logits_debug.append(sess.run(logits, feed_dict={x_ph: o})[0])
+            # a, v_t, logp_t = sess.run(get_action_ops, feed_dict={model['x']: o.board.reshape(1, -1)})
+            a, v_t, logp_t = sess.run(get_action_ops, feed_dict={model['x']: o})
+            logits_debug.append(sess.run(logits, feed_dict={model['x']: o})[0])
 
 
             # save and log
@@ -475,7 +465,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
                 if not (terminal):
                     print('Warning: trajectory cut off by epoch at %d steps.' % ep_len)
                 # if trajectory didn't reach terminal state, bootstrap value target
-                last_val = r if d else sess.run(v, feed_dict={x_ph: o})
+                last_val = r if d else sess.run(v, feed_dict={model['x']: o})
                 buf.finish_path(last_val)
                 if terminal:
                     # only save EpRet / EpLen if trajectory finished
@@ -570,7 +560,7 @@ if __name__ == '__main__':
 
     logger_kwargs = setup_logger_kwargs(args.exp_name, args.seed)
 
-    ppo_pyco(lambda: gym.make(args.env), actor_critic=core.mlp_actor_critic,
+    ppo_pyco_load(lambda: gym.make(args.env), actor_critic=core.mlp_actor_critic,
              ac_kwargs=dict(hidden_sizes=[args.hid] * args.l), gamma=args.gamma,
              seed=args.seed, steps_per_epoch=args.steps, epochs=args.epochs,
              logger_kwargs=logger_kwargs)

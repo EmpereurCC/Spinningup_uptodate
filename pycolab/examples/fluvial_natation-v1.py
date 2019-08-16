@@ -109,9 +109,9 @@ class PlayerSprite(prefab_sprites.MazeWalker):
       self._west(board, the_plot)
 
     # Apply swimming commands.
-    if actions == 0:    # swim leftward?
+    if actions == 1:    # swim leftward?
       self._west(board, the_plot)
-    elif actions == 1:  # swim rightward?
+    elif actions == 0:  # swim rightward?
       self._east(board, the_plot)
       #the_plot.add_reward(1)
 
