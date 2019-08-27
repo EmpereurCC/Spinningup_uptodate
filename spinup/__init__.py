@@ -9,6 +9,7 @@ from spinup.algos.ppo_rgb.ppo_rgb import ppo_rgb
 from spinup.algos.ppo_pyco.ppo_pyco import ppo_pyco
 from spinup.algos.ppo_pyco_multi.ppo_pyco_multi import ppo_pyco_multi
 from spinup.algos.ppo_pyco_load.ppo_pyco_load import ppo_pyco_load
+from spinup.algos.IMPALA.impala import impala
 
 
 #from spinup.algos.random_agent import random_agent

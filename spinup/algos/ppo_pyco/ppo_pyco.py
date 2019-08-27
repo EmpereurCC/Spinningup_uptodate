@@ -70,6 +70,7 @@ class PPOBuffer:
 
         # the next two lines implement GAE-Lambda advantage calculation
         deltas = rews[:-1] + self.gamma * vals[1:] - vals[:-1]
+        #deltas is the vector of all GAE-lambda advantages
         self.adv_buf[path_slice] = core.discount_cumsum(deltas, self.gamma * self.lam)
 
         # the next line computes rewards-to-go, to be targets for the value function
@@ -125,7 +126,7 @@ with early stopping based on approximate KL
 """
 
 
-def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=dict(), seed=435,
+def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=dict(), seed=473,
              steps_per_epoch=4000, epochs=50000, gamma=0.99, clip_ratio=0.1, pi_lr=3e-4,
              vf_lr=3e-4, train_pi_iters=80, train_v_iters=80, lam=0.97, max_ep_len=350,
              target_kl=0.01, logger_kwargs=dict(), save_freq=10, tensorboard_path = '/home/clement/spinningup/tensorboard'):
@@ -306,11 +307,13 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     min_adv = tf.where(adv_ph > 0, (1 + clip_ratio) * adv_ph, (1 - clip_ratio) * adv_ph)
     pi_loss = -tf.reduce_mean(tf.minimum(ratio * adv_ph, min_adv))
 
+
     # tensorboard test
     with tf.name_scope('pi_loss'):
         core.variable_summaries(pi_loss)
 
     v_loss = tf.reduce_mean((ret_ph - v) ** 2)
+
 
     # Info (useful to watch during learning)
     approx_kl = tf.reduce_mean(logp_old_ph - logp)  # a sample estimate for KL-divergence, easy to compute
