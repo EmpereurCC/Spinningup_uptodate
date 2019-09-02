@@ -3,14 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="4602e947-2d2e-47ca-8f43-4e790f889043" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/saved_model.pb" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/saved_model.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.data-00000-of-00001" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.data-00000-of-00001" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.index" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/vars.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/vars.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spinup/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spinup/algos/ppo_pyco_multi/ppo_pyco.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/algos/ppo_pyco_multi/ppo_pyco_multi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spinup/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/run.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pycolab/examples/fluvial_natation-v1.py" beforeDir="false" afterPath="$PROJECT_DIR$/pycolab/examples/fluvial_natation-v1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spinup/algos/IMPALA/core.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/algos/IMPALA/core.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spinup/algos/IMPALA/impala.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/algos/IMPALA/impala.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -36,7 +32,7 @@
   <component name="ProjectId" id="1Ogd5Jl1f2sqnmA00BmHNmyOof8" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/spinup/algos/ppo_pyco_multi" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/spinup/run.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -56,7 +52,28 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.run">
+  <component name="RunManager" selected="Python.run impala">
+    <configuration name="run impala" type="PythonConfigurationType" factoryName="Python">
+      <module name="spinningup_instadeep" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda2/envs/test_env/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/spinup" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/spinup/run.py" />
+      <option name="PARAMETERS" value="impala --env fluvial_natation-v1 --steps_per_epoch 4000 --max_ep_len 1000 --num_cpu 1" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="run" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="spinningup_instadeep" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -101,6 +118,7 @@
     </configuration>
     <list>
       <item itemvalue="Python.run" />
+      <item itemvalue="Python.run impala" />
       <item itemvalue="Python.test_ppo" />
     </list>
   </component>
@@ -131,7 +149,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -155,11 +175,6 @@
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$USER_HOME$/PycharmProjects/PycoGYM/gym_pyco/gym_pyco/envs/pyco_env.py</url>
-          <line>25</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py</url>
           <line>270</line>
           <option name="timeStamp" value="10" />
@@ -175,75 +190,23 @@
           <option name="timeStamp" value="13" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spinup/run.py</url>
-          <line>37</line>
-          <option name="timeStamp" value="14" />
+          <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py</url>
+          <line>255</line>
+          <option name="timeStamp" value="35" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spinup/run.py</url>
-          <line>159</line>
-          <option name="timeStamp" value="15" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spinup/run.py</url>
-          <line>162</line>
-          <option name="timeStamp" value="16" />
+          <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py</url>
+          <line>173</line>
+          <option name="timeStamp" value="36" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
     </breakpoint-manager>
-  </component>
-  <component name="debuggerHistoryManager">
-    <expressions id="evaluateExpression">
-      <expression>
-        <expression-string>spinup.ppo_pyco</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>spinup.ppo_pyco()</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>eval('spinup.'+cmd)</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>obs_dim[2]</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>obs_dim</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>o</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>env</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>self._numberlink_path</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>numberlink_path</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>env.action_space.n</expression-string>
-        <language-id>Python</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-    </expressions>
   </component>
 </project>

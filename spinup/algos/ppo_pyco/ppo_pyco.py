@@ -409,7 +409,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             else:
                 sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
                                              ret_ph: buf.ret_buf})
-
+                #sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf, adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         # Log changes from update
         if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
             pi_l_new, v_l_new, kl, cf = sess.run([pi_loss, v_loss, approx_kl, clipfrac],

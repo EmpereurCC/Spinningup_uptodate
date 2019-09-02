@@ -103,7 +103,6 @@ class PlayerSprite(prefab_sprites.MazeWalker):
 
   def update(self, actions, board, layers, backdrop, things, the_plot):
     del layers, backdrop, things   # Unused.
-
     # Move one square left on even game iterations.
     if the_plot.frame % 2 == 0:
       self._west(board, the_plot)
@@ -111,9 +110,10 @@ class PlayerSprite(prefab_sprites.MazeWalker):
     # Apply swimming commands.
     if actions == 1:    # swim leftward?
       self._west(board, the_plot)
+      the_plot.add_reward(-.000000001)
     elif actions == 0:  # swim rightward?
       self._east(board, the_plot)
-      #the_plot.add_reward(1)
+      the_plot.add_reward(.000000001)
 
     # See if the game is won or lost.
     if self.virtual_position[1] < 0:

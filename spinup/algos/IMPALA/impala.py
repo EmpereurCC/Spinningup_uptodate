@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 import gym
 import time
-import spinup.algos.ppo_pyco.core as core
+import spinup.algos.IMPALA.core as core
 import matplotlib.pyplot as plt
 from gym.spaces import Box, Discrete
 from spinup.utils.logx import EpochLogger
@@ -43,9 +43,11 @@ class Actor:
         self.sess = tf.Session()
 
     def load_last_weights(self):
+
         saver = tf.train.Saver()
         export_dir = "/home/clement/Documents/spinningup_instadeep/data/cmd_impala/cmd_impala_s0/simple_save"
         saver.restore(self.sess, export_dir)
+
 
     def get_episode(self, env, get_action_ops, gym_or_pyco, obs_dim):
         """ Need to restore the latest learner parameters of the model"""
@@ -66,9 +68,13 @@ class Actor:
         obs_buf.append(obs)
         rew_buf.append(rew)
 
+
         with self.sess as sess:
-            tf.set_random_seed(self.seed)
-            np.random.seed(self.seed)
+
+            seed = np.random.randint(low=1, high=100, size=1)[0]
+
+            for i in range(seed):
+                sess.run(get_action_ops, feed_dict={self.x_ph: obs})
 
             a, v_t, logp_t = sess.run(get_action_ops, feed_dict={self.x_ph: obs})
 
@@ -100,7 +106,7 @@ class Actor:
         return obs_buf, act_buf, rew_buf, val_buf, logp_buf
 
 
-def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), actor_critic=core.mlp_actor_critic, num_cpu=1, epochs=5, max_ep_len=300,
+def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), actor_critic=core.mlp_actor_critic, num_cpu=1, epochs=25, max_ep_len=300,
            steps_per_epoch=4000, gamma=0.99, seed=473,vf_lr=1e-3, pi_lr = 3e-4, rho_bar = 1, c_bar = 1, train_pi_iters=80,train_v_iters=80,
            tensorboard_path = '/home/clement/spinningup/tensorboard'):
 
@@ -151,7 +157,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
     ac_kwargs['action_space'] = env.action_space
 
     # Inputs to computation graph
-    # x_ph, a_ph = core.placeholders_from_spaces(env.observation_space, env.action_space)
+
     if gym_or_pyco == 'pyco':
         x_ph = tf.placeholder(tf.float32, shape=(None, obs_dim[0], obs_dim[1], 1))
     else:
@@ -173,7 +179,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
         pi, logp, logp_pi, v = actor_critic(x_ph, a_ph, policy='baseline_gaussian_policy',
                                             action_space=env.action_space.shape[0])
     else:
-        pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='relational_categorical_policy',
+        pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='baseline_categorical_policy',
                                                     action_space=env.action_space.n)
     adv_ph, pi_act_ph, logp_old_ph, v_trace_ph = core.placeholders(None, None, None, None)
 
@@ -278,21 +284,22 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
         v_trace_list = []
         adv_buf = []
         actors = [Actor(x_ph, a_ph, np.random.random_integers(0, high=39239, size=1)[0]) for i in range(n)]
-
+        ep_len = []
         for i in range(n):
             actors[i].load_last_weights()
             obs_buf, act_buf, rew_buf, val_buf, logp_buf = actors[i].get_episode(env,get_action_ops,gym_or_pyco,obs_dim)
             obs_buf = np.reshape(obs_buf, (np.shape(obs_buf)[0], obs_dim[0], obs_dim[1], 1))
+            ep_len.append(len(obs_buf))
             logp_buf = np.reshape(logp_buf, (np.shape(logp_buf)[0]))
             obs_list.append(obs_buf)
             rew_list.append(rew_buf)
             act_list.append(act_buf)
             val_list.append(val_buf)
             logp_list.append(logp_buf)
-            v_trace_list.append(v_trace(obs_list[0], rew_list[0], act_list[0], logp_list[0], gamma, c_param, rho_param, v, obs_dim[0], obs_dim[1], sess))
-            adv = rew_list[0][:-1] + gamma * v_trace_list[i][1:] - val_list[i][:-1]
+            v_trace_list.append(v_trace(obs_list[i], rew_list[i], act_list[i], logp_list[i], gamma, c_param, rho_param, v, obs_dim[0], obs_dim[1], sess))
+            adv = rew_list[i][:-1] + gamma * v_trace_list[i][1:] - val_list[i][:-1]
             # normalization of adv:
-            adv = np.append(adv, rew_list[0][-1] -val_list[i][-1])
+            adv = np.append(adv, rew_list[i][-1] -val_list[i][-1])
             adv_mean, adv_std = mpi_statistics_scalar(adv)
             adv = (adv - adv_mean) / adv_std
             adv_buf.append(adv)
@@ -305,9 +312,8 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
         for k in range(n):
             EpRet.append(sum(rew_list[k]))
         logger.store(EpRet=EpRet)
+        logger.store(EpLen=ep_len)
         logger.log_tabular('Epoch', epoch)
         logger.log_tabular('EpRet', with_min_and_max=True)
+        logger.log_tabular('EpLen', with_min_and_max=True)
         logger.dump_tabular()
-
-
-

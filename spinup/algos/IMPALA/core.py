@@ -159,7 +159,7 @@ def mlp_gaussian_policy(x, a, hidden_sizes, activation, output_activation, actio
 
 
 
-def relational_categorical_policy(x,a, hidden=[256], output_size = 2, activation = tf.nn.relu, final_activation=tf.nn.softmax,act_dim=2):
+def relational_categorical_policy(x,a, hidden=[256], output_size = 2, activation = tf.nn.relu, final_activation=tf.nn.softmax,act_dim=2, seed = 42):
     nnk, shape = attention_CNN(x)
     query, key, value, E = query_key_value(nnk, shape)
     normalized_query = layer_normalization(query)
@@ -173,14 +173,14 @@ def relational_categorical_policy(x,a, hidden=[256], output_size = 2, activation
     logp_all = tf.nn.log_softmax(logits)
     #log(softmax(logits)) = (log(exp(x_1)/sum(exp(x)),...)
     #pi = tf.squeeze(tf.multinomial(logits,1),axis=1)
-    pi = tf.squeeze(tf.random.categorical(logits,1),axis=1)
+    pi = tf.squeeze(tf.random.categorical(logits,1, seed = seed),axis=1)
     logp = tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1)
     #renvoie logp(x knowing a from last state )
     logp_pi = tf.reduce_sum(tf.one_hot(pi, depth=act_dim) * logp_all, axis=1)
     #same but with the new one
     return pi, logp, logp_pi, logits, max_E_hat
 
-def baseline_categorical_policy(x,a, hidden=[256],output_size = 2, activation = tf.nn.relu, final_activation=tf.nn.softmax, act_dim=2):
+def baseline_categorical_policy(x,a, hidden=[256],output_size = 2, activation = tf.nn.relu, final_activation=tf.nn.softmax, act_dim=2, seed = 248):
     x, shape = attention_CNN(x)
     new_x = residual_CNN(x)
     new_x = residual_CNN(new_x)
@@ -188,7 +188,7 @@ def baseline_categorical_policy(x,a, hidden=[256],output_size = 2, activation = 
     max_E_hat = feature_wise_max_baseline(new_x)
     logits = output_layer(max_E_hat, hidden, output_size, activation, final_activation)
     logp_all = tf.nn.log_softmax(logits)
-    pi = tf.squeeze(tf.random.categorical(logits, 1), axis=1)
+    pi = tf.squeeze(tf.random.categorical(logits, 1, seed = seed), axis=1)
     logp = tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1)
     logp_pi = tf.reduce_sum(tf.one_hot(pi, depth=act_dim) * logp_all, axis=1)
     return pi, logp, logp_pi, logits, max_E_hat
@@ -258,7 +258,7 @@ def mlp_actor_critic(x, a, hidden_sizes=(64,64), activation=tf.tanh,
         elif policy == relational_gaussian_policy:
             pi, logp, logp_pi, max_E_hat = policy(x, a, action_space, output_activation, hidden_sizes=(64,64), activation = tf.nn.relu)
         else:
-            pi, logp, logp_pi, logits, max_E_hat = policy(x, a, output_size=action_space, act_dim=action_space )
+            pi, logp, logp_pi, logits, max_E_hat = policy(x, a, output_size=action_space, act_dim=action_space)
 
 
     with tf.variable_scope('v'):
