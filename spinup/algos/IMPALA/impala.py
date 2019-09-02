@@ -273,7 +273,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
 
 
     saver = tf.train.Saver()
-    save_path = saver.save(sess,"/home/clement/Documents/spinningup_instadeep/data/cmd_impala/cmd_impala_s0/simple_save")
+    save_path = saver.save(sess,export_dir)
 
     for epoch in range(epochs):
         # Begins collecting trajectories and computing v_traces, adv.
