@@ -42,10 +42,9 @@ class Actor:
         self.seed = seed
         self.sess = tf.Session()
 
-    def load_last_weights(self):
+    def load_last_weights(self, export_dir):
 
         saver = tf.train.Saver()
-        export_dir = "/home/clement/Documents/spinningup_instadeep/data/cmd_impala/cmd_impala_s0/simple_save"
         saver.restore(self.sess, export_dir)
 
 
@@ -106,8 +105,9 @@ class Actor:
         return obs_buf, act_buf, rew_buf, val_buf, logp_buf
 
 
-def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), actor_critic=core.mlp_actor_critic, num_cpu=1, epochs=25, max_ep_len=300,
-           steps_per_epoch=4000, gamma=0.99, seed=473,vf_lr=1e-3, pi_lr = 3e-4, rho_bar = 1, c_bar = 1, train_pi_iters=80,train_v_iters=80,
+def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), actor_critic=core.mlp_actor_critic, num_cpu=1, epochs=50, max_ep_len=300,
+           steps_per_epoch=4000, gamma=0.99, seed=4673,vf_lr=1e-3, pi_lr = 3e-4, rho_bar = 1, c_bar = 1, train_pi_iters=80,train_v_iters=80,
+           export_dir="/home/clement/Documents/spinningup_instadeep/data/cmd_impala/cmd_impala_s0/simple_save",
            tensorboard_path = '/home/clement/spinningup/tensorboard'):
 
     dict_continous_gym = ['CarRacing', 'LunarLander', 'Pong', 'AirRaid', 'Adventure', 'AirRaid', 'Alien', 'Amidar',
@@ -287,7 +287,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
         actors = [Actor(x_ph, a_ph, np.random.random_integers(0, high=39239, size=1)[0]) for i in range(n)]
         ep_len = []
         for i in range(n):
-            actors[i].load_last_weights()
+            actors[i].load_last_weights(export_dir)
             obs_buf, act_buf, rew_buf, val_buf, logp_buf = actors[i].get_episode(env,get_action_ops,gym_or_pyco,obs_dim)
             obs_buf = np.reshape(obs_buf, (np.shape(obs_buf)[0], obs_dim[0], obs_dim[1], 1))
             ep_len.append(len(obs_buf))
@@ -308,7 +308,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
         update(adv_buf, obs_list, act_list, logp_list)
         saver = tf.train.Saver()
         save_path = saver.save(sess,
-                               "/home/clement/Documents/spinningup_instadeep/data/cmd_impala/cmd_impala_s0/simple_save")
+                               export_dir)
         EpRet = []
         for k in range(n):
             EpRet.append(sum(rew_list[k]))
