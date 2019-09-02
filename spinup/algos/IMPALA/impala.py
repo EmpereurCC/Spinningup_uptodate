@@ -134,6 +134,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
                 'Venture', 'VideoPinball', 'WizardOfWor', 'VarsRevenge', 'Zaxxon', 'Numberlink']
 
     env = env_fn()
+    proc_id()
     seed += 10000 * 3
     tf.set_random_seed(seed)
     np.random.seed(seed)
@@ -200,7 +201,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
     c_param = tf.minimum(tf.exp(logp - logp_old_ph) ,c_bar)
     rho_param = tf.minimum(tf.exp(logp - logp_old_ph) ,rho_bar)
     # adv_ph = rew_adv + gamma * v_trace(s+1) - v ( la value de pi)
-    pi_loss = -tf.reduce_mean(adv_ph*rho_param)
+    pi_loss = tf.reduce_mean(adv_ph*rho_param)
 
     v_loss = tf.reduce_mean((v_trace_ph - v) ** 2)
 
