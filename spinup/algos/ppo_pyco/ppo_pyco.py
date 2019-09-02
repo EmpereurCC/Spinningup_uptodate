@@ -28,7 +28,7 @@ class PPOBuffer:
             self.obs_buf = np.zeros((size, obs_dim[0], obs_dim[1], 1), dtype=np.float32)
         else:
             self.obs_buf = np.zeros((size, obs_dim[0], obs_dim[1], obs_dim[2]), dtype=np.float32)
-        self.act_buf = np.zeros(core.combined_shape(size, act_dim), dtype=np.float32)
+        self.act_buf = np.zeros(size, dtype=np.float32)
         self.adv_buf = np.zeros(size, dtype=np.float32)
         self.rew_buf = np.zeros(size, dtype=np.float32)
         self.ret_buf = np.zeros(size, dtype=np.float32)
@@ -259,18 +259,18 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
     # Inputs to computation graph
     # x_ph, a_ph = core.placeholders_from_spaces(env.observation_space, env.action_space)
     if gym_or_pyco == 'pyco':
-        x_ph = tf.placeholder(tf.float32, shape=(1, obs_dim[0], obs_dim[1], 1))
+        x_ph = tf.placeholder(tf.float32, shape=(None, obs_dim[0], obs_dim[1], 1))
     else:
-        x_ph = tf.placeholder(tf.float32, shape=(1, obs_dim[0], obs_dim[1], obs_dim[2]))
+        x_ph = tf.placeholder(tf.float32, shape=(None, obs_dim[0], obs_dim[1], obs_dim[2]))
     # a_ph = core.placeholders_from_spaces(env.action_space)
     if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
-        a_ph = tf.placeholder(tf.uint8, shape=(1))
+        a_ph = tf.placeholder(tf.uint8, shape=(None))
 
     elif gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
         a_ph = tf.placeholder(tf.float32, shape=(env.action_space.shape[0]))
 
     else:
-        a_ph = tf.placeholder(tf.uint8, shape=(1))
+        a_ph = tf.placeholder(tf.uint8, shape=(None))
 
     adv_ph, ret_ph, logp_old_ph = core.placeholders(None, None, None)
 
@@ -353,15 +353,15 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         # inputs = {k:v for k,v in zip(all_phs, buf.get())}
         if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
-                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a,
+                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf,
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
-                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a[0],
+                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf,
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         else:
             pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent],
-                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a,
+                                              feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf,
                                                          adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
 
         # pi_l_old, v_l_old, ent = sess.run([pi_loss, v_loss, approx_ent], feed_dict=inputs)
@@ -373,7 +373,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
 
                 _, kl = sess.run([train_pi, approx_kl],
-                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
+                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf, adv_ph: buf.adv_buf,
                                             ret_ph: buf.ret_buf})
                 kl = mpi_avg(kl)
                 if kl > 1.5 * target_kl:
@@ -382,7 +382,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
 
                 _, kl = sess.run([train_pi, approx_kl],
-                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a[0], adv_ph: buf.adv_buf,
+                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf, adv_ph: buf.adv_buf,
                                             ret_ph: buf.ret_buf})
                 kl = mpi_avg(kl)
                 if kl > 1.5 * target_kl:
@@ -391,7 +391,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             else:
 
                 _, kl = sess.run([train_pi, approx_kl],
-                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
+                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf, adv_ph: buf.adv_buf,
                                             ret_ph: buf.ret_buf})
                 kl = mpi_avg(kl)
                 if kl > 1.5 * target_kl:
@@ -401,27 +401,27 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         logger.store(StopIter=i)
         for _ in range(train_v_iters):
             if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
-                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
+                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf, adv_ph: buf.adv_buf,
                                              ret_ph: buf.ret_buf})
             if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
-                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a[0], adv_ph: buf.adv_buf,
+                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf, adv_ph: buf.adv_buf,
                                              ret_ph: buf.ret_buf})
             else:
-                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
-                                             ret_ph: buf.ret_buf})
-                #sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf, adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
+                #sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a, adv_ph: buf.adv_buf,
+                #                             ret_ph: buf.ret_buf})
+                sess.run(train_v, feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf, adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         # Log changes from update
         if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
             pi_l_new, v_l_new, kl, cf = sess.run([pi_loss, v_loss, approx_kl, clipfrac],
-                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a,
+                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf,
                                                             adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         if gym_or_pyco == 'gym' and isinstance(env.action_space, Box):
             pi_l_new, v_l_new, kl, cf = sess.run([pi_loss, v_loss, approx_kl, clipfrac],
-                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a[0],
+                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf,
                                                             adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
         else:
             pi_l_new, v_l_new, kl, cf = sess.run([pi_loss, v_loss, approx_kl, clipfrac],
-                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: o, a_ph: a,
+                                                 feed_dict={logp_old_ph: buf.logp_buf, x_ph: buf.obs_buf, a_ph: buf.act_buf,
                                                             adv_ph: buf.adv_buf, ret_ph: buf.ret_buf})
 
         logger.store(LossPi=pi_l_old, LossV=v_l_old,
