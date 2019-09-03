@@ -311,7 +311,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
                                export_dir)
         EpRet = []
         for k in range(n):
-            EpRet.append(rew_list[k])
+            EpRet = np.append(EpRet,sum(rew_list[k]))
         logger.store(EpRet=EpRet)
         logger.store(EpLen=ep_len)
         logger.log_tabular('Epoch', epoch)
