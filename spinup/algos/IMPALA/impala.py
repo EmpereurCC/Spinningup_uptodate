@@ -105,7 +105,7 @@ class Actor:
         return obs_buf, act_buf, rew_buf, val_buf, logp_buf
 
 
-def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), actor_critic=core.mlp_actor_critic, num_cpu=1, epochs=50, max_ep_len=300,
+def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), actor_critic=core.mlp_actor_critic, num_cpu=1, epochs=200, max_ep_len=300,
            steps_per_epoch=4000, gamma=0.99, seed=4673,vf_lr=1e-3, pi_lr = 3e-4, rho_bar = 1, c_bar = 1, train_pi_iters=80,train_v_iters=80,
            export_dir="/home/clement/Documents/spinningup_instadeep/data/cmd_impala/cmd_impala_s0/simple_save",
            tensorboard_path = '/home/clement/spinningup/tensorboard'):
@@ -311,7 +311,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
                                export_dir)
         EpRet = []
         for k in range(n):
-            EpRet.append(sum(rew_list[k]))
+            EpRet.append(rew_list[k])
         logger.store(EpRet=EpRet)
         logger.store(EpLen=ep_len)
         logger.log_tabular('Epoch', epoch)

@@ -41,15 +41,15 @@ from scipy import ndimage
 # Just one level for now.
 LEVELS = [
     ['^^^^^^^^^^^^^^^',
-     '               ',
+     '         -     ',
      '  +           +',
      '  ==   ++  == +',
      '              +',
-     '=======       +',
+     '=======     - +',
      ' +            +',
-     '   +      ++   ',
+     '   +  -   ++   ',
      '+        ==    ',
-     '+        +     ',
+     '+    -   +     ',
      '   =           ',
      ' +++ P    ++   '],
 ]
@@ -60,6 +60,7 @@ COLOURS = {'+': (0, 0, 999),      # Blue background. Safe from fire here.
            ' ': (500, 500, 500),  # Exposed areas where the player might die.
            '^': (700, 700, 700),  # Permanent safe zone.
            '=': (999, 600, 200),  # Impassable wall.
+           'I': (999, 400, 200),  # Intermerdiary reward
            '@': (999, 0, 0)}      # The fiery shockwave.
 
 
@@ -154,8 +155,11 @@ class ShockwaveDrape(plab_things.Drape):
     player_position = things['P'].position
 
     if layers['^'][player_position]:
-      the_plot.add_reward(1)
+      the_plot.add_reward(10)
       the_plot.terminate_episode()
+
+    if layers['-'][player_position]:
+        the_plot.add_reward(1)
 
     under_fire = self.curtain[player_position]
     in_danger_zone = things[' '].curtain[player_position]

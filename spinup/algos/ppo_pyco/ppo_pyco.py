@@ -127,7 +127,7 @@ with early stopping based on approximate KL
 
 
 def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=dict(), seed=473,
-             steps_per_epoch=4000, epochs=50000, gamma=0.99, clip_ratio=0.1, pi_lr=3e-4,
+             steps_per_epoch=4000, epochs=500, gamma=0.99, clip_ratio=0.1, pi_lr=3e-4,
              vf_lr=3e-4, train_pi_iters=80, train_v_iters=80, lam=0.97, max_ep_len=350,
              target_kl=0.01, logger_kwargs=dict(), save_freq=10, tensorboard_path = '/home/clement/spinningup/tensorboard'):
     """
