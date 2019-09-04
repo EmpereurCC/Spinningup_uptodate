@@ -150,7 +150,8 @@ def call_experiment(exp_name, thunk, seed=0, num_cpu=1, data_dir=None,
 
     # Set up logger output directory
     if 'logger_kwargs' not in kwargs:
-        kwargs['logger_kwargs'] = setup_logger_kwargs(exp_name, seed, data_dir, datestamp)
+        dir=kwargs['tensorboard_path']+'/data/'
+        kwargs['logger_kwargs'] = setup_logger_kwargs(exp_name, seed, dir, datestamp)
     else:
         print('Note: Call experiment is not handling logger_kwargs.\n')
 

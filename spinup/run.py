@@ -160,7 +160,8 @@ def parse_and_execute_grid_search(cmd, args):
     eg = ExperimentGrid(name=exp_name)
     for k,v in arg_dict.items():
         eg.add(k, v, shorthand=given_shorthands.get(k))
-    eg.run(algo, **run_kwargs)
+    datadir = arg_dict['tensorboard_path'][0]+'/data'
+    eg.run(algo, **run_kwargs, data_dir=datadir)
 
 
 if __name__ == '__main__':

@@ -285,7 +285,7 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
         pi, logp, logp_pi, v = actor_critic(x_ph, a_ph, policy='baseline_gaussian_policy',
                                             action_space=env.action_space.shape[0])
     else:
-        pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='relational_categorical_policy',
+        pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='baseline_categorical_policy',
                                                     action_space=env.action_space.n)
 
     # Need all placeholders in *this* order later (to zip with data from buffer)
