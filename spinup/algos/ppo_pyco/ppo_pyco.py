@@ -127,8 +127,8 @@ with early stopping based on approximate KL
 
 
 def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=dict(), seed=473,
-             steps_per_epoch=4000, epochs=500, gamma=0.99, clip_ratio=0.1, pi_lr=3e-4,
-             vf_lr=3e-4, train_pi_iters=80, train_v_iters=80, lam=0.97, max_ep_len=350,
+             steps_per_epoch=4000, epochs=500, gamma=0.99, clip_ratio=0.1, pi_lr=1e-2,
+             vf_lr=5e-3, train_pi_iters=80, train_v_iters=80, lam=0.97, max_ep_len=350,
              target_kl=0.01, logger_kwargs=dict(), save_freq=10, tensorboard_path = '/home/clement/spinningup/tensorboard'):
     """
 
@@ -475,10 +475,13 @@ def ppo_pyco(gym_or_pyco, env_fn, actor_critic=core.mlp_actor_critic, ac_kwargs=
             terminal = d or (ep_len == max_ep_len)
             if terminal or (t == local_steps_per_epoch - 1):
                 num_ep += 1
+                last_val = r if d else sess.run(v, feed_dict={x_ph: o})
+
                 if not (terminal):
                     print('Warning: trajectory cut off by epoch at %d steps.' % ep_len)
+                else:
+                    last_val = 0
                 # if trajectory didn't reach terminal state, bootstrap value target
-                last_val = r if d else sess.run(v, feed_dict={x_ph: o})
                 buf.finish_path(last_val)
                 if terminal:
                     # only save EpRet / EpLen if trajectory finished

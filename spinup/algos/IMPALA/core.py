@@ -173,7 +173,7 @@ def relational_categorical_policy(x,a, hidden=[256], output_size = 2, activation
     logp_all = tf.nn.log_softmax(logits)
     #log(softmax(logits)) = (log(exp(x_1)/sum(exp(x)),...)
     #pi = tf.squeeze(tf.multinomial(logits,1),axis=1)
-    pi = tf.squeeze(tf.random.categorical(logits,1, seed = seed),axis=1)
+    pi = tf.squeeze(tf.random.categorical( logits, 1, seed=seed),axis=1)
     logp = tf.reduce_sum(tf.one_hot(a, depth=act_dim) * logp_all, axis=1)
     #renvoie logp(x knowing a from last state )
     logp_pi = tf.reduce_sum(tf.one_hot(pi, depth=act_dim) * logp_all, axis=1)

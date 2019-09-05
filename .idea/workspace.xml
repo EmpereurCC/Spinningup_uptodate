@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4602e947-2d2e-47ca-8f43-4e790f889043" name="Default Changelist" comment="">
+    <list default="true" id="4602e947-2d2e-47ca-8f43-4e790f889043" name="Default Changelist" comment="cluster config of data folder">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/progress.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/progress.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/saved_model.pb" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/saved_model.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.data-00000-of-00001" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.data-00000-of-00001" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.index" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/simple_save/variables/variables.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/vars.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/data/cmd_ppo_pyco/cmd_ppo_pyco_s0/vars.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pycolab/examples/shockwave-v0.py" beforeDir="false" afterPath="$PROJECT_DIR$/pycolab/examples/shockwave-v0.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_oar.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_oar.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spinup/algos/IMPALA/core.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/algos/IMPALA/core.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spinup/algos/IMPALA/impala.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/algos/IMPALA/impala.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,6 +24,7 @@
   <component name="Git.Settings">
     <option name="PREVIOUS_COMMIT_AUTHORS">
       <list>
+        <option value="EmpereurCC &lt;c.collgon@instadeep.com&gt;" />
         <option value="clement" />
       </list>
     </option>
@@ -70,7 +67,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/spinup/run.py" />
-      <option name="PARAMETERS" value="impala --env fluvial_natation-v1 --steps_per_epoch 4000 --max_ep_len 1000 --epochs 2 --num_cpu 1" />
+      <option name="PARAMETERS" value="impala --env apprehend-v0 --steps_per_epoch 4000 --max_ep_len 1000 --num_cpu 1" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -91,7 +88,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/spinup/run.py" />
-      <option name="PARAMETERS" value="ppo_pyco --env apprehend-v0 --steps_per_epoch 4000 --max_ep_len 1000 --num_cpu 4" />
+      <option name="PARAMETERS" value="ppo_pyco --env fluvial_natation-v1 --steps_per_epoch 4000 --max_ep_len 1000 --num_cpu 1 --tensorboard_path '$USER_HOME$/tensorboard2'" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -137,6 +134,14 @@
       <option name="presentableId" value="Default" />
       <updated>1559833115580</updated>
     </task>
+    <task id="LOCAL-00001" summary="cluster config of data folder">
+      <created>1567601976095</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1567601976095</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView">
@@ -163,7 +168,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Working on the concatenation of envs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Working on the concatenation of envs" />
+    <MESSAGE value="cluster config of data folder" />
+    <option name="LAST_COMMIT_MESSAGE" value="cluster config of data folder" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -179,59 +185,24 @@
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py</url>
-          <line>414</line>
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/core.py</url>
-          <line>255</line>
-          <option name="timeStamp" value="35" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py</url>
-          <line>361</line>
-          <option name="timeStamp" value="53" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spinup/algos/IMPALA/core.py</url>
-          <line>172</line>
-          <option name="timeStamp" value="54" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spinup/algos/IMPALA/core.py</url>
-          <line>260</line>
-          <option name="timeStamp" value="56" />
+          <url>file://$PROJECT_DIR$/spinup/algos/IMPALA/impala.py</url>
+          <line>323</line>
+          <option name="timeStamp" value="66" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/spinup/algos/IMPALA/impala.py</url>
-          <line>182</line>
-          <option name="timeStamp" value="57" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spinup/algos/IMPALA/core.py</url>
-          <line>189</line>
-          <option name="timeStamp" value="59" />
+          <line>256</line>
+          <option name="timeStamp" value="67" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py</url>
-          <line>353</line>
-          <option name="timeStamp" value="60" />
+          <line>521</line>
+          <option name="timeStamp" value="68" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py</url>
-          <line>452</line>
-          <option name="timeStamp" value="61" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py</url>
-          <line>447</line>
-          <option name="timeStamp" value="62" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py</url>
-          <line>30</line>
-          <option name="timeStamp" value="63" />
+          <line>71</line>
+          <option name="timeStamp" value="76" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

@@ -55,6 +55,9 @@ class Actor:
         rew_buf = []
         val_buf = []
         logp_buf = []
+        last_rew_buf = []
+        last_val_buf = []
+        last_obs_buf = []
 
         obs, rew, done, ep_ret, ep_len = env.reset(), 0, False, 0, 0
 
@@ -83,30 +86,51 @@ class Actor:
 
             while not done:
                 obs, rew, done, _ = env.step(act_buf[-1])
-                if gym_or_pyco == 'gym':
+                if done:
+                    if rew == None:
+                        rew = 0
+                    last_obs_buf = obs
+                    last_rew_buf = rew
+                    a, v_t, logp_t = self.sess.run(get_action_ops, feed_dict={self.x_ph: obs})
+                    last_val_buf = np.append(v_t[0])
+
+                elif gym_or_pyco == 'gym':
                     obs = obs.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
+                    obs_buf.append(obs)
+                    if rew == None:
+                        rew = 0
+                        rew_buf.append(rew)
+                    else:
+                        rew_buf.append(rew)
+
+                    a, v_t, logp_t = self.sess.run(get_action_ops, feed_dict={self.x_ph: obs})
+
+                    act_buf.append(a[0])
+                    val_buf.append(v_t[0])
+                    logp_buf.append(logp_t)
+
                 else:
                     obs = rgb_input_pyco(obs, obs_dim)
                     obs = obs.reshape(1, obs_dim[0], obs_dim[1], 1)
+                    obs_buf.append(obs)
+                    if rew == None:
+                        rew = 0
+                        rew_buf.append(rew)
+                    else:
+                        rew_buf.append(rew)
 
-                obs_buf.append(obs)
-                if rew == None:
-                    rew = 0
-                    rew_buf.append(rew)
-                else:
-                    rew_buf.append(rew)
+                    a, v_t, logp_t = self.sess.run(get_action_ops, feed_dict={self.x_ph: obs})
 
-                a, v_t, logp_t = self.sess.run(get_action_ops, feed_dict={self.x_ph: obs})
+                    act_buf.append(a[0])
+                    val_buf.append(v_t[0])
+                    logp_buf.append(logp_t)
 
-                act_buf.append(a[0])
-                val_buf.append(v_t[0])
-                logp_buf.append(logp_t)
 
-        return obs_buf, act_buf, rew_buf, val_buf, logp_buf
+        return obs_buf, act_buf, rew_buf, val_buf, logp_buf, last_rew_buf, last_val_buf, last_obs_buf
 
 
 def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), actor_critic=core.mlp_actor_critic, num_cpu=1, epochs=200, max_ep_len=300,
-           steps_per_epoch=4000, gamma=0.99, seed=4673,vf_lr=1e-3, pi_lr = 3e-4, rho_bar = 1, c_bar = 1, train_pi_iters=80,train_v_iters=80,
+           steps_per_epoch=4000, gamma=0.99, seed=473,vf_lr=1e-3, pi_lr = 3e-4, rho_bar = 1, c_bar = 1, train_pi_iters=80,train_v_iters=80,
            export_dir="/home/clement/Documents/spinningup_instadeep/data/cmd_impala/cmd_impala_s0/simple_save",
            tensorboard_path = '/home/clement/spinningup/tensorboard'):
 
@@ -201,11 +225,11 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
     c_param = tf.minimum(tf.exp(logp - logp_old_ph) ,c_bar)
     rho_param = tf.minimum(tf.exp(logp - logp_old_ph) ,rho_bar)
     # adv_ph = rew_adv + gamma * v_trace(s+1) - v ( la value de pi)
-    pi_loss = tf.reduce_mean(adv_ph*rho_param)
+    pi_loss = -tf.reduce_mean(adv_ph*rho_param)
 
     v_loss = tf.reduce_mean((v_trace_ph - v) ** 2)
 
-    def v_trace(obs_list, rews_list, act_list, logp_list, gamma, c_param, rho_param, v, obs_dim1, obs_dim2, sess):
+    def v_trace(obs_list, rews_list, act_list, logp_list, gamma, c_param, rho_param, v, obs_dim1, obs_dim2, last_obs_buf, sess):
         """Prend en entrée les trajectoires et les rewards associés, renvoie un dictionaire associé à des states : à un state x_s est associé un scalaire v_{x_s}
         les trajectoires seront une liste de trajectoires
 
@@ -224,33 +248,30 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
         """
 
         size_obs = len(obs_list)
-        v_tr = np.zeros(size_obs)
+        v_tr = np.zeros(size_obs+1)
 
         c_param = sess.run([c_param],feed_dict={x_ph: obs_list, a_ph: act_list, logp_old_ph: logp_list})
+        c_param[-1] = 1
         rho_param = sess.run([rho_param], feed_dict={x_ph: obs_list, a_ph: act_list, logp_old_ph: logp_list})
-        v_tr[-1] = sess.run([v],feed_dict={x_ph: np.reshape(obs_list[-1], (1, obs_dim1, obs_dim2, 1))}) + rews_list[-1] * rho_param[0][-1]
+        #v_tr[-1] = sess.run([v],feed_dict={x_ph: np.reshape(obs_list[-1], (1, obs_dim1, obs_dim2, 1))}) + rews_list[-1] * rho_param[0][-1]
+        v_tr[-1] = last_val_buf
+        v_tr[-2] = sess.run([v],feed_dict={x_ph: obs_list[-1]})+rho_param[0][-1]*(rews_list[-1] + gamma * sess.run([v],feed_dict={x_ph: last_obs_buf})- sess.run([v],feed_dict={x_ph: obs_list[-1]})) + gamma * c_param[0][-1] *(v_tr[-1] - sess.run([v],feed_dict={x_ph: last_obs_buf}) )
         for i in range(size_obs-1):
             obs_t_1 = np.reshape(obs_list[size_obs-2-i], (1, obs_dim1, obs_dim2, 1))
             obs_t = np.reshape(obs_list[size_obs-i-1],(1,obs_dim1, obs_dim2, 1))
-            v_tr[size_obs-1-i] = sess.run([v],feed_dict={x_ph: obs_t_1})+rho_param[0][size_obs-1-i]*(rews_list[size_obs-1-i] + gamma * sess.run([v], feed_dict={x_ph: obs_t})[0]- sess.run([v],feed_dict={x_ph: obs_t_1})) + gamma * c_param[0][size_obs-1-i] *(v_tr[size_obs-i-1] - sess.run([v], feed_dict={x_ph: obs_t})[0] )
+            v_tr[size_obs-2-i] = sess.run([v],feed_dict={x_ph: obs_t_1})+rho_param[0][size_obs-2-i]*(rews_list[size_obs-2-i] + gamma * sess.run([v], feed_dict={x_ph: obs_t})[0]- sess.run([v],feed_dict={x_ph: obs_t_1})) + gamma * c_param[0][size_obs-2-i] *(v_tr[size_obs-i-1] - sess.run([v], feed_dict={x_ph: obs_t})[0] )
         return v_tr
 
     # with adv_ph the advantage with v_trace. On the whole thing?..
     with tf.name_scope('pi_loss'):
         core.variable_summaries(pi_loss)
 
-    # Optimization
-    # num_env_frames = tf.train.get_global_step()
-    #learning_rate = tf.train.polynomial_decay(pi_lr, 30, 1e9, 0)
-    #optimizer = tf.train.RMSPropOptimizer(pi_lr, 0.99, 0., .1)
-    #train_op = optimizer.minimize(pi_loss)
-
     # Optimizers
     train_pi = MpiAdamOptimizer(learning_rate=pi_lr).minimize(pi_loss)
     train_v = MpiAdamOptimizer(learning_rate=vf_lr).minimize(v_loss)
 
+
     sess = tf.Session()
-    # v_loss = tf.reduce_mean((v_trace(traj_list,rews_list,act_list,len_list,num_traj, actors, sess, c_bar, rho_bar, gamma)-v) ** 2)
     merged = tf.summary.merge_all()
     train_writer = tf.summary.FileWriter(tensorboard_path + '/train',
                                          sess.graph)
@@ -288,7 +309,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
         ep_len = []
         for i in range(n):
             actors[i].load_last_weights(export_dir)
-            obs_buf, act_buf, rew_buf, val_buf, logp_buf = actors[i].get_episode(env,get_action_ops,gym_or_pyco,obs_dim)
+            obs_buf, act_buf, rew_buf, val_buf, logp_buf, last_rew_buf, last_val_buf, last_obs_buf = actors[i].get_episode(env,get_action_ops,gym_or_pyco,obs_dim)
             obs_buf = np.reshape(obs_buf, (np.shape(obs_buf)[0], obs_dim[0], obs_dim[1], 1))
             ep_len.append(len(obs_buf))
             logp_buf = np.reshape(logp_buf, (np.shape(logp_buf)[0]))
@@ -297,10 +318,11 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
             act_list.append(act_buf)
             val_list.append(val_buf)
             logp_list.append(logp_buf)
-            v_trace_list.append(v_trace(obs_list[i], rew_list[i], act_list[i], logp_list[i], gamma, c_param, rho_param, v, obs_dim[0], obs_dim[1], sess))
-            adv = rew_list[i][:-1] + gamma * v_trace_list[i][1:] - val_list[i][:-1]
+            v_trace_list.append(v_trace(obs_list[i], rew_list[i], act_list[i], logp_list[i], gamma, c_param, rho_param, v, obs_dim[0], obs_dim[1], last_obs_buf, sess))
+            rews = np.append(rew_list[i], last_rew_buf)
+            vals = np.append(val_list[i], last_val_buf)
+            adv = rews[:-1] + gamma * v_trace_list[i][1:] - vals[:-1]
             # normalization of adv:
-            adv = np.append(adv, rew_list[i][-1] -val_list[i][-1])
             adv_mean, adv_std = mpi_statistics_scalar(adv)
             adv = (adv - adv_mean) / adv_std
             adv_buf.append(adv)
