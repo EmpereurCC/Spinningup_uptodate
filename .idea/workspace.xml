@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4602e947-2d2e-47ca-8f43-4e790f889043" name="Default Changelist" comment="cluster config of data folder">
+    <list default="true" id="4602e947-2d2e-47ca-8f43-4e790f889043" name="Default Changelist" comment="impala revision">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run_oar.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_oar.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spinup/algos/IMPALA/core.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/algos/IMPALA/core.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spinup/algos/IMPALA/impala.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/algos/IMPALA/impala.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py" beforeDir="false" afterPath="$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py" afterDir="false" />
     </list>
@@ -53,7 +52,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.run">
+  <component name="RunManager" selected="Python.run impala">
     <configuration name="run impala" type="PythonConfigurationType" factoryName="Python">
       <module name="spinningup_instadeep" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -67,7 +66,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/spinup/run.py" />
-      <option name="PARAMETERS" value="impala --env apprehend-v0 --steps_per_epoch 4000 --max_ep_len 1000 --num_cpu 1" />
+      <option name="PARAMETERS" value="impala --env apprehend-v0 --steps_per_epoch 4000 --max_ep_len 1000 --num_cpu 1 --tensorboard_path '$USER_HOME$/tensorboard3'" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -88,7 +87,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/spinup/run.py" />
-      <option name="PARAMETERS" value="ppo_pyco --env fluvial_natation-v1 --steps_per_epoch 4000 --max_ep_len 1000 --num_cpu 1 --tensorboard_path '$USER_HOME$/tensorboard2'" />
+      <option name="PARAMETERS" value="ppo_pyco --env apprehend-v0 --steps_per_epoch 4000 --max_ep_len 1000 --num_cpu 1 --tensorboard_path '$USER_HOME$/tensorboard2'" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -141,7 +140,14 @@
       <option name="project" value="LOCAL" />
       <updated>1567601976095</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="impala revision">
+      <created>1567699695917</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1567699695917</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TodoView">
@@ -169,7 +175,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Working on the concatenation of envs" />
     <MESSAGE value="cluster config of data folder" />
-    <option name="LAST_COMMIT_MESSAGE" value="cluster config of data folder" />
+    <MESSAGE value="impala revision" />
+    <option name="LAST_COMMIT_MESSAGE" value="impala revision" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -185,16 +192,6 @@
           <option name="timeStamp" value="5" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spinup/algos/IMPALA/impala.py</url>
-          <line>323</line>
-          <option name="timeStamp" value="66" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spinup/algos/IMPALA/impala.py</url>
-          <line>256</line>
-          <option name="timeStamp" value="67" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py</url>
           <line>521</line>
           <option name="timeStamp" value="68" />
@@ -203,6 +200,16 @@
           <url>file://$PROJECT_DIR$/spinup/algos/ppo_pyco/ppo_pyco.py</url>
           <line>71</line>
           <option name="timeStamp" value="76" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/spinup/algos/IMPALA/impala.py</url>
+          <line>344</line>
+          <option name="timeStamp" value="101" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/spinup/algos/IMPALA/impala.py</url>
+          <line>340</line>
+          <option name="timeStamp" value="102" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

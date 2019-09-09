@@ -89,10 +89,11 @@ class Actor:
                 if done:
                     if rew == None:
                         rew = 0
-                    last_obs_buf = obs
+                    last_obs_buf = rgb_input_pyco(obs, obs_dim)
+                    last_obs_buf = last_obs_buf.reshape(1, obs_dim[0], obs_dim[1], 1)
                     last_rew_buf = rew
-                    a, v_t, logp_t = self.sess.run(get_action_ops, feed_dict={self.x_ph: obs})
-                    last_val_buf = np.append(v_t[0])
+                    a, v_t, logp_t = self.sess.run(get_action_ops, feed_dict={self.x_ph: last_obs_buf})
+                    last_val_buf = v_t[0]
 
                 elif gym_or_pyco == 'gym':
                     obs = obs.reshape(1, obs_dim[0], obs_dim[1], obs_dim[2])
@@ -225,7 +226,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
     c_param = tf.minimum(tf.exp(logp - logp_old_ph) ,c_bar)
     rho_param = tf.minimum(tf.exp(logp - logp_old_ph) ,rho_bar)
     # adv_ph = rew_adv + gamma * v_trace(s+1) - v ( la value de pi)
-    pi_loss = -tf.reduce_mean(adv_ph*rho_param)
+    pi_loss = tf.reduce_mean(adv_ph*rho_param)
 
     v_loss = tf.reduce_mean((v_trace_ph - v) ** 2)
 
@@ -250,16 +251,17 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
         size_obs = len(obs_list)
         v_tr = np.zeros(size_obs+1)
 
-        c_param = sess.run([c_param],feed_dict={x_ph: obs_list, a_ph: act_list, logp_old_ph: logp_list})
+        c_param = sess.run([c_param],feed_dict={x_ph: obs_list, a_ph: act_list, logp_old_ph: logp_list})[0]
         c_param[-1] = 1
         rho_param = sess.run([rho_param], feed_dict={x_ph: obs_list, a_ph: act_list, logp_old_ph: logp_list})
         #v_tr[-1] = sess.run([v],feed_dict={x_ph: np.reshape(obs_list[-1], (1, obs_dim1, obs_dim2, 1))}) + rews_list[-1] * rho_param[0][-1]
         v_tr[-1] = last_val_buf
-        v_tr[-2] = sess.run([v],feed_dict={x_ph: obs_list[-1]})+rho_param[0][-1]*(rews_list[-1] + gamma * sess.run([v],feed_dict={x_ph: last_obs_buf})- sess.run([v],feed_dict={x_ph: obs_list[-1]})) + gamma * c_param[0][-1] *(v_tr[-1] - sess.run([v],feed_dict={x_ph: last_obs_buf}) )
+        last_obs = np.reshape(obs_list[-1], (1, obs_dim1, obs_dim2, 1))
+        v_tr[-2] = sess.run([v],feed_dict={x_ph: last_obs})[0]+rho_param[0][-1]*(rews_list[-1] + gamma * sess.run([v],feed_dict={x_ph: last_obs_buf})[0]- sess.run([v],feed_dict={x_ph: last_obs})[0]) + gamma * c_param[-1] *(v_tr[-1] - sess.run([v],feed_dict={x_ph: last_obs_buf})[0] )
         for i in range(size_obs-1):
             obs_t_1 = np.reshape(obs_list[size_obs-2-i], (1, obs_dim1, obs_dim2, 1))
             obs_t = np.reshape(obs_list[size_obs-i-1],(1,obs_dim1, obs_dim2, 1))
-            v_tr[size_obs-2-i] = sess.run([v],feed_dict={x_ph: obs_t_1})+rho_param[0][size_obs-2-i]*(rews_list[size_obs-2-i] + gamma * sess.run([v], feed_dict={x_ph: obs_t})[0]- sess.run([v],feed_dict={x_ph: obs_t_1})) + gamma * c_param[0][size_obs-2-i] *(v_tr[size_obs-i-1] - sess.run([v], feed_dict={x_ph: obs_t})[0] )
+            v_tr[size_obs-2-i] = sess.run([v],feed_dict={x_ph: obs_t_1})[0]+rho_param[0][size_obs-2-i]*(rews_list[size_obs-2-i] + gamma * sess.run([v], feed_dict={x_ph: obs_t})[0]- sess.run([v],feed_dict={x_ph: obs_t_1})[0]) + gamma * c_param[size_obs-2-i] *(v_tr[size_obs-i-1] - sess.run([v], feed_dict={x_ph: obs_t})[0] )
         return v_tr
 
     # with adv_ph the advantage with v_trace. On the whole thing?..
@@ -283,13 +285,13 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
 
 
     def update(adv_buf, obs_list, act_list, logp_list):
-        pi_l_old, v_l_old = sess.run([pi_loss, v_loss],feed_dict={x_ph: obs_list[0], a_ph: act_list[0], logp_old_ph: logp_list[0], v_trace_ph: v_trace_list[0], adv_ph: adv_buf[0]})
+        pi_l_old, v_l_old = sess.run([pi_loss, v_loss],feed_dict={x_ph: obs_list[0], a_ph: act_list[0], logp_old_ph: logp_list[0], v_trace_ph: v_trace_list[0][:-1], adv_ph: adv_buf[0]})
         for i in range(n):
             for _ in range(train_pi_iters):
                 sess.run(train_pi, feed_dict ={x_ph: obs_list[i], a_ph: act_list[i], logp_old_ph: logp_list[i], adv_ph: adv_buf[i]})
             for _ in range(train_v_iters):
-                sess.run(train_v,feed_dict={x_ph: obs_list[i], a_ph: act_list[i], v_trace_ph: v_trace_list[i]})
-        pi_l_new, v_l_new = sess.run([pi_loss, v_loss],feed_dict={x_ph: obs_list[0], a_ph: act_list[0], logp_old_ph: logp_list[0], v_trace_ph: v_trace_list[0], adv_ph: adv_buf[0]})
+                sess.run(train_v,feed_dict={x_ph: obs_list[i], a_ph: act_list[i], v_trace_ph: v_trace_list[i][:-1]})
+        pi_l_new, v_l_new = sess.run([pi_loss, v_loss],feed_dict={x_ph: obs_list[0], a_ph: act_list[0], logp_old_ph: logp_list[0], v_trace_ph: v_trace_list[0][:-1], adv_ph: adv_buf[0]})
         logger.store(LossPi=pi_l_old, LossV=v_l_old, DeltaLossPi=(pi_l_new-pi_l_old), DeltaLossV=(v_l_new - v_l_old))
 
 
@@ -307,11 +309,13 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
         adv_buf = []
         actors = [Actor(x_ph, a_ph, np.random.random_integers(0, high=39239, size=1)[0]) for i in range(n)]
         ep_len = []
+        last_rew_list = []
         for i in range(n):
             actors[i].load_last_weights(export_dir)
             obs_buf, act_buf, rew_buf, val_buf, logp_buf, last_rew_buf, last_val_buf, last_obs_buf = actors[i].get_episode(env,get_action_ops,gym_or_pyco,obs_dim)
             obs_buf = np.reshape(obs_buf, (np.shape(obs_buf)[0], obs_dim[0], obs_dim[1], 1))
             ep_len.append(len(obs_buf))
+            last_rew_list = np.append(last_rew_list, last_rew_buf)
             logp_buf = np.reshape(logp_buf, (np.shape(logp_buf)[0]))
             obs_list.append(obs_buf)
             rew_list.append(rew_buf)
@@ -334,6 +338,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
         EpRet = []
         for k in range(n):
             EpRet = np.append(EpRet,sum(rew_list[k]))
+            EpRet[-1] = EpRet[-1]+last_rew_list[k]
         logger.store(EpRet=EpRet)
         logger.store(EpLen=ep_len)
         logger.log_tabular('Epoch', epoch)
