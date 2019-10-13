@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/clement/Documents/spinningup_instadeep/data/cmd_impala/cmd_impala_s0/simple_save"
+all_model_checkpoint_paths: "/home/clement/Documents/spinningup_instadeep/data/cmd_impala/cmd_impala_s0/simple_save"

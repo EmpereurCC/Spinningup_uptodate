@@ -302,7 +302,7 @@ def call_experiment(exp_name, thunk, seed=0, num_cpu=1, data_dir=None,
     encoded_thunk = base64.b64encode(zlib.compress(pickled_thunk)).decode('utf-8')
 
     entrypoint = osp.join(osp.abspath(osp.dirname(__file__)), 'run_entrypoint.py')
-    cmd = [sys.executable if sys.executable else 'python', entrypoint, encoded_thunk]
+    cmd = [sys.executable if sys.executable else 'python', '-B', '-m', 'cProfile', '-o', '/home/clement/sub.prof', entrypoint, encoded_thunk]
     try:
         subprocess.check_call(cmd, env=os.environ)
     except CalledProcessError:

@@ -176,7 +176,7 @@ def relational_categorical_policy(x,a, hidden=[256], output_size = 2, activation
     logp_pi = tf.reduce_sum(tf.one_hot(pi, depth=act_dim) * logp_all, axis=1)
     return pi, logp, logp_pi, logits, max_E_hat
 
-def baseline_categorical_policy(x,a, hidden=[256],output_size = 2, activation = tf.nn.relu, final_activation=tf.nn.softmax, act_dim=2):
+def baseline_categorical_policy(x,a, hidden=[256],output_size = 2, activation = tf.nn.relu, final_activation=None, act_dim=2):
     x, shape = attention_CNN(x)
     new_x = residual_CNN(x)
     new_x = residual_CNN(new_x)

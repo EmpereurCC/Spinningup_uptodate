@@ -131,7 +131,7 @@ class Actor:
 
 
 def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), actor_critic=core.mlp_actor_critic, num_cpu=1, epochs=200, max_ep_len=300,
-           steps_per_epoch=4000, gamma=0.99, seed=473,vf_lr=1e-3, pi_lr = 3e-4, rho_bar = 1, c_bar = 1, train_pi_iters=80,train_v_iters=80,
+           steps_per_epoch=4000, gamma=0.99, seed=73,vf_lr=1e-3, pi_lr = 3e-4, entropy_cost = 0.00025, baseline_cost = .5, rho_bar = 1, c_bar = 1, train_pi_iters=80,train_v_iters=80,
            export_dir="/home/clement/Documents/spinningup_instadeep/data/cmd_impala/cmd_impala_s0/simple_save",
            tensorboard_path = '/home/clement/spinningup/tensorboard'):
 
@@ -196,7 +196,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
         a_ph = tf.placeholder(tf.float32, shape=(env.action_space.shape[0]))
 
     else:
-        a_ph = tf.placeholder(tf.uint8, shape=(None))
+        a_ph = tf.placeholder(tf.int32, shape=(None))
 
     if gym_or_pyco == 'gym' and isinstance(env.action_space, Discrete):
         pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='baseline_categorical_policy',
@@ -208,7 +208,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
         pi, logp, logp_pi, v, logits = actor_critic(x_ph, a_ph, policy='baseline_categorical_policy',
                                                     action_space=env.action_space.n)
     adv_ph, pi_act_ph, logp_old_ph, v_trace_ph = core.placeholders(None, None, None, None)
-
+    advantages = tf.stop_gradient(adv_ph)
     all_phs = [x_ph, a_ph, adv_ph, pi_act_ph]
 
     # every steps, get : action, value and logprob.
@@ -225,10 +225,35 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
 
     c_param = tf.minimum(tf.exp(logp - logp_old_ph) ,c_bar)
     rho_param = tf.minimum(tf.exp(logp - logp_old_ph) ,rho_bar)
-    # adv_ph = rew_adv + gamma * v_trace(s+1) - v ( la value de pi)
-    pi_loss = tf.reduce_mean(adv_ph*rho_param)
 
-    v_loss = tf.reduce_mean((v_trace_ph - v) ** 2)
+    def compute_baseline_loss(v_trace_ph, v):
+        # Loss for the baseline, summed over the time dimension.
+        # Multiply by 0.5 to match the standard update rule:
+        # d(loss) / d(baseline) = advantage
+        return .5 * tf.reduce_sum(tf.square(v_trace_ph - v))
+
+    def compute_entropy_loss(logits):
+        policy = tf.nn.softmax(logits)
+        log_policy = tf.nn.log_softmax(logits)
+        entropy_per_timestep = tf.reduce_sum(-policy * log_policy, axis=-1)
+        return -tf.reduce_sum(entropy_per_timestep)
+
+#advantages = adv_buf[i]
+
+    def compute_policy_gradient_loss(logits, advantages, a=all_phs[1]):
+        #actions = tf.one_hot(a,depth=act_dim)
+        cross_entropy = tf.nn.sparse_softmax_cross_entropy_with_logits(
+            labels=a, logits=logits)
+        advantages = tf.stop_gradient(advantages)
+        policy_gradient_loss_per_timestep = cross_entropy * advantages
+        return tf.reduce_sum(policy_gradient_loss_per_timestep)
+
+    total_loss = compute_entropy_loss(logits) * entropy_cost + compute_baseline_loss(v_trace_ph, v) * baseline_cost + \
+                 compute_policy_gradient_loss(logits, adv_ph, all_phs[1])
+
+    #pi_loss = tf.reduce_mean(adv_ph*rho_param)
+
+    #v_loss = tf.reduce_mean((v_trace_ph - v) ** 2)
 
     def v_trace(obs_list, rews_list, act_list, logp_list, gamma, c_param, rho_param, v, obs_dim1, obs_dim2, last_obs_buf, sess):
         """Prend en entrée les trajectoires et les rewards associés, renvoie un dictionaire associé à des states : à un state x_s est associé un scalaire v_{x_s}
@@ -266,12 +291,39 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
 
     # with adv_ph the advantage with v_trace. On the whole thing?..
     with tf.name_scope('pi_loss'):
-        core.variable_summaries(pi_loss)
+        #core.variable_summaries(pi_loss)
+        core.variable_summaries(total_loss)
 
     # Optimizers
-    train_pi = MpiAdamOptimizer(learning_rate=pi_lr).minimize(pi_loss)
-    train_v = MpiAdamOptimizer(learning_rate=vf_lr).minimize(v_loss)
+    #train_pi = MpiAdamOptimizer(learning_rate=pi_lr).minimize(pi_loss)
+    #train_v = MpiAdamOptimizer(learning_rate=vf_lr).minimize(v_loss)
+    #train_pi = MpiAdamOptimizer(learning_rate=pi_lr).minimize(total_loss)
+    total_env_frames=1e6
+    momentum=0.
+    epsilon=.1
+    decay=.99
 
+    #tf.get_variable(
+    #    'num_environment_frames',
+    #    initializer=tf.zeros_initializer(),
+    #    shape=[],
+    #    dtype=tf.float32,
+    #    trainable=False,
+    #    collections=[tf.GraphKeys.GLOBAL_STEP, tf.GraphKeys.GLOBAL_VARIABLES])
+
+    #num_env_frames = tf.train.get_global_step()
+    #learning_rate = tf.train.polynomial_decay(pi_lr, num_env_frames,
+    #                                          total_env_frames, 0)
+    global_step = 100
+    starter_learning_rate = 3e-4
+    end_learning_rate=3e-5
+    decay_steps=5e2
+    learning_rate = tf.compat.v1.train.polynomial_decay(starter_learning_rate, global_step,
+                                                        decay_steps, 0)
+
+    optimizer = tf.train.RMSPropOptimizer(learning_rate, decay,
+                                          momentum, epsilon)
+    train_pi = optimizer.minimize(total_loss)
 
     sess = tf.Session()
     merged = tf.summary.merge_all()
@@ -285,14 +337,16 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
 
 
     def update(adv_buf, obs_list, act_list, logp_list):
-        pi_l_old, v_l_old = sess.run([pi_loss, v_loss],feed_dict={x_ph: obs_list[0], a_ph: act_list[0], logp_old_ph: logp_list[0], v_trace_ph: v_trace_list[0][:-1], adv_ph: adv_buf[0]})
+        #pi_l_old, v_l_old = sess.run([pi_loss, v_loss],feed_dict={x_ph
+        #
+        # : obs_list[0], a_ph: act_list[0], logp_old_ph: logp_list[0], v_trace_ph: v_trace_list[0][:-1], adv_ph: adv_buf[0]})
         for i in range(n):
             for _ in range(train_pi_iters):
-                sess.run(train_pi, feed_dict ={x_ph: obs_list[i], a_ph: act_list[i], logp_old_ph: logp_list[i], adv_ph: adv_buf[i]})
-            for _ in range(train_v_iters):
-                sess.run(train_v,feed_dict={x_ph: obs_list[i], a_ph: act_list[i], v_trace_ph: v_trace_list[i][:-1]})
-        pi_l_new, v_l_new = sess.run([pi_loss, v_loss],feed_dict={x_ph: obs_list[0], a_ph: act_list[0], logp_old_ph: logp_list[0], v_trace_ph: v_trace_list[0][:-1], adv_ph: adv_buf[0]})
-        logger.store(LossPi=pi_l_old, LossV=v_l_old, DeltaLossPi=(pi_l_new-pi_l_old), DeltaLossV=(v_l_new - v_l_old))
+                sess.run(train_pi, feed_dict ={x_ph: obs_list[i], a_ph: act_list[i], logp_old_ph: logp_list[i], adv_ph: adv_buf[i], v_trace_ph: v_trace_list[i][:-1]})
+            #for _ in range(train_v_iters):
+            #    sess.run(train_v,feed_dict={x_ph: obs_list[i], a_ph: act_list[i], v_trace_ph: v_trace_list[i][:-1]})
+        #pi_l_new, v_l_new = sess.run([pi_loss, v_loss],feed_dict={x_ph: obs_list[0], a_ph: act_list[0], logp_old_ph: logp_list[0], v_trace_ph: v_trace_list[0][:-1], adv_ph: adv_buf[0]})
+        #logger.store(LossPi=pi_l_old, LossV=v_l_old, DeltaLossPi=(pi_l_new-pi_l_old), DeltaLossV=(v_l_new - v_l_old))
 
 
     saver = tf.train.Saver()
@@ -328,7 +382,7 @@ def impala(gym_or_pyco, env_fn, ac_kwargs=dict(), n=4, logger_kwargs=dict(), act
             adv = rews[:-1] + gamma * v_trace_list[i][1:] - vals[:-1]
             # normalization of adv:
             adv_mean, adv_std = mpi_statistics_scalar(adv)
-            adv = (adv - adv_mean) / adv_std
+            adv = (adv - adv_mean) / (adv_std + 1e-5)
             adv_buf.append(adv)
 
         update(adv_buf, obs_list, act_list, logp_list)
